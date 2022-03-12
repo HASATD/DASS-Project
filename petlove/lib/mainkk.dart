@@ -346,8 +346,17 @@ class _RequestFormSubmittedState extends State<RequestFormSubmitted> {
         backgroundColor: Colors.black,
         body: SafeArea(
             child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Request Submitted Succesfully!"),
+            Row(),
+            Text(
+              "Request Submitted Succesfully!",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16.0),
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(

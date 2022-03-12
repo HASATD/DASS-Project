@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
               Text(
                 'Hi ' + _user.displayName! + '!',
                 style: TextStyle(
-                  color: Color.fromARGB(255, 209, 179, 72),
+                  color: Color.fromARGB(255, 4, 50, 88),
                   fontSize: 26,
                 ),
               ),
