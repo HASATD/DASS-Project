@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:petlove/res/custom_colors.dart';
+import 'package:petlove/screens/home_page.dart';
 import 'package:petlove/utils/authentication.dart';
 import 'package:petlove/widgets/google_sign_in_button.dart';
 import 'package:petlove/screens/user_info_screen.dart';
@@ -47,7 +48,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 if (user != null) {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => UserInfoScreen(
+                      builder: (context) => HomePage(
                         user: user,
                       ),
                     ),

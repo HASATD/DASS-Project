@@ -41,16 +41,16 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'FlutterFire',
+                      'PetCare',
                       style: TextStyle(
-                        color: Color.fromARGB(255, 238, 236, 223),
+                        color: Color.fromARGB(255, 4, 50, 88),
                         fontSize: 40,
                       ),
                     ),
                     Text(
                       'Authentication',
                       style: TextStyle(
-                        color: Color.fromARGB(255, 241, 229, 209),
+                        color: Color.fromARGB(255, 66, 152, 173),
                         fontSize: 40,
                       ),
                     ),
