@@ -36,20 +36,30 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
-        leading: Container(
+        /**leading: Container(
           color: Color.fromARGB(255, 57, 152, 216),
           padding: EdgeInsets.all(3),
           /** PetCare Logo **/
-          child: Flexible(
+            child: Flexible(
             flex: 1,
             child: Image.asset(
               'assets/petcare_image.PNG',
               height: 50,
             ),
           ),
-        ), //Container
+        ),**/ //Container
         title: Text('Welcome to petcare app'),
         centerTitle: true,
+      ),
+      drawer: Drawer(
+        child: ListView(padding: EdgeInsets.zero, children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.red,
+            ),
+            child: Text('Drawer Header'),
+          ),
+        ]),
       ),
       body: SafeArea(
         child: Padding(

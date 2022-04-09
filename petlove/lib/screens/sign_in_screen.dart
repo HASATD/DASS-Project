@@ -36,7 +36,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       flex: 1,
                       child: Image.asset(
                         'assets/petcare_image.PNG',
-                        height: 160,
+                        height: 200,
+                        fit: BoxFit.fill,
                       ),
                     ),
                     SizedBox(height: 20),
