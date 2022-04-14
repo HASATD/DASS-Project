@@ -144,50 +144,100 @@ class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   late User _user;
   @override
+  void initState() {
+    _user = widget._user;
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            decoration: const InputDecoration(
-              icon: const Icon(Icons.pets),
-              hintText: 'Enter Species of Animal',
-              labelText: 'Animal',
+    return Scaffold(
+      appBar: AppBar(
+        leading: Container(
+          color: Color.fromARGB(255, 4, 50, 88),
+          padding: EdgeInsets.all(3),
+          child: Flexible(
+            flex: 1,
+            child: IconButton(
+              tooltip: 'Go back',
+              icon: const Icon(Icons.arrow_back_ios),
+              alignment: Alignment.center,
+              iconSize: 20,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(
+                            user: _user,
+                          )),
+                );
+              },
             ),
           ),
-          TextFormField(
-            decoration: const InputDecoration(
-              icon: const Icon(Icons.my_location),
-              hintText: 'Enter location of Animal',
-              labelText: 'Location',
+        ), //Container,
+        elevation: 0,
+        backgroundColor: Color.fromARGB(255, 4, 50, 88),
+        title: Text(
+          'User Account',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+      ),
+      drawer: Drawer(
+        child: ListView(padding: EdgeInsets.zero, children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.red,
             ),
+            child: Text('Drawer Header'),
           ),
-          TextFormField(
-            decoration: const InputDecoration(
-              icon: const Icon(Icons.report_sharp),
-              hintText: 'Give description of the Animal',
-              labelText: 'Description',
+        ]),
+      ),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextFormField(
+              decoration: const InputDecoration(
+                icon: const Icon(Icons.pets),
+                hintText: 'Enter Species of Animal',
+                labelText: 'Animal',
+              ),
             ),
-          ),
-          new Container(
-              padding: const EdgeInsets.only(left: 150.0, top: 40.0),
-              child: new RaisedButton(
-                child: const Text('Submit'),
-                onPressed: () {
-                  if (_user != null) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => ImageUpload(
-                          user: _user,
+            TextFormField(
+              decoration: const InputDecoration(
+                icon: const Icon(Icons.my_location),
+                hintText: 'Enter location of Animal',
+                labelText: 'Location',
+              ),
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                icon: const Icon(Icons.report_sharp),
+                hintText: 'Give description of the Animal',
+                labelText: 'Description',
+              ),
+            ),
+            new Container(
+                padding: const EdgeInsets.only(left: 150.0, top: 40.0),
+                child: new RaisedButton(
+                  child: const Text('Submit'),
+                  onPressed: () {
+                    if (_user != null) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => ImageUpload(
+                            user: _user,
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                },
-              )),
-        ],
+                      );
+                    }
+                  },
+                )),
+          ],
+        ),
       ),
     );
   }

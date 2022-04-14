@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:petlove/screens/home_page.dart';
@@ -30,12 +33,13 @@ class Authentication {
   static Future<User?> signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
     if (kIsWeb) {
       GoogleAuthProvider authProvider = GoogleAuthProvider();
 
       try {
-        final UserCredential userCredential =
+        UserCredential userCredential =
             await auth.signInWithPopup(authProvider);
 
         user = userCredential.user;
@@ -60,8 +64,29 @@ class Authentication {
         try {
           final UserCredential userCredential =
               await auth.signInWithCredential(credential);
+          final List<DocumentSnapshot> docs;
+          QuerySnapshot result = await _firestore
+              .collection('users')
+              .where('uid', isEqualTo: userCredential.user!.uid)
+              .get();
+          docs = result.docs;
+          DocumentSnapshot variable = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredential.user!.uid)
+              .get();
 
-          user = userCredential.user;
+          if (docs.isEmpty) {
+            await _firestore
+                .collection('users')
+                .doc(userCredential.user!.uid)
+                .set({
+              'username': userCredential.user!.displayName,
+              'uid': userCredential.user!.uid,
+              'email': userCredential.user!.email,
+              'photo url': userCredential.user!.photoURL
+            });
+            user = userCredential.user;
+          } else {}
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             ScaffoldMessenger.of(context).showSnackBar(
