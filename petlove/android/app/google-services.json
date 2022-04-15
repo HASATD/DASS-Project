@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "386670549374",
-    "project_id": "pet-love-f501c",
-    "storage_bucket": "pet-love-f501c.appspot.com"
+    "project_number": "309924366211",
+    "project_id": "petlove-78e5a",
+    "storage_bucket": "petlove-78e5a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:386670549374:android:2bfe05972f45639309fb2f",
+        "mobilesdk_app_id": "1:309924366211:android:7f825e846fcb20fec618b6",
         "android_client_info": {
           "package_name": "com.example.petlove"
         }
       },
       "oauth_client": [
         {
-          "client_id": "386670549374-akmejh2jgp3d8enqp8nmktu4lvuvd2id.apps.googleusercontent.com",
+          "client_id": "309924366211-6hunihbaa2t7dfpa2p9shqs7nobtsufc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCmsVeuTRPJxpFFb5U9kimj-2exkxFqXZw"
+          "current_key": "AIzaSyATYG82bo9NXTHkmUyqXVGU1xM_8ZwHGo0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "386670549374-akmejh2jgp3d8enqp8nmktu4lvuvd2id.apps.googleusercontent.com",
+              "client_id": "309924366211-6hunihbaa2t7dfpa2p9shqs7nobtsufc.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
