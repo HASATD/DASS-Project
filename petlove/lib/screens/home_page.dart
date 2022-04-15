@@ -8,7 +8,6 @@ import 'package:petlove/widgets/google_sign_in_button.dart';
 import 'package:petlove/screens/account_page.dart';
 import 'package:petlove/mainkk.dart';
 import 'package:flutter/material.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:petlove/screens/account_page.dart';
 import 'package:petlove/mainkk.dart';
 import 'package:petlove/screens/register_NGO.dart';
