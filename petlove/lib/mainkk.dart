@@ -6,26 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:petlove/screens/home_page.dart';
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key, required User user})
-//       : _user = user,
-//         super(key: key);
-
-//   final User _user;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       theme: ThemeData(
-//         primarySwatch: Colors.green,
-//       ),
-//       home: const ImageUpload(title: 'Flutter Demo Home Page'),
-//     );
-//   }
-// }
-
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:path/path.dart';
 class AnimalDetails extends StatefulWidget {
   const AnimalDetails({Key? key, required User user})
       : _user = user,
@@ -256,6 +239,24 @@ class ImageUpload extends StatefulWidget {
 
 class _ImageUploadState extends State<ImageUpload> {
   late User _user;
+  File? image;
+
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  Future uploadFile() async {
+    //if (image == null) return;
+    final fileName = basename(image!.path);
+    final destination = 'files/$fileName';
+
+    try {
+      final ref = FirebaseStorage.instance
+          .ref(destination)
+          .child('file/');
+      await ref.putFile(image!);
+    } catch (e) {
+      print('error occured');
+    }
+  }
 
   @override
   void initState() {
@@ -264,7 +265,6 @@ class _ImageUploadState extends State<ImageUpload> {
     super.initState();
   }
 
-  File? image;
 
   Future pickImage() async {
     try {
@@ -280,6 +280,7 @@ class _ImageUploadState extends State<ImageUpload> {
     }
   }
 
+  
   Future pickImageC() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
@@ -289,6 +290,8 @@ class _ImageUploadState extends State<ImageUpload> {
       final imageTemp = File(image.path);
 
       setState(() => this.image = imageTemp);
+  
+      return imageTemp;
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
@@ -330,12 +333,44 @@ class _ImageUploadState extends State<ImageUpload> {
             children: [
               MaterialButton(
                   color: Color.fromARGB(255, 4, 50, 88),
-                  child: const Text("Pick Image from Gallery",
+                  child: const Text("Pick Image from Camera",
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold)),
                   onPressed: () {
-                    pickImage();
+                    pickImageC();
                   }),
+              const SizedBox(
+                height: 20,
+              ),
+              new Container(
+                  child: new RaisedButton(
+                child: const Text('Submit Image'),
+                onPressed: () {
+                  // if (_user != null) {
+                  //   Navigator.of(context).pushReplacement(
+                  //     MaterialPageRoute(
+                  //       builder: (context) => RequestFormSubmitted(
+                  //         user: _user,
+                  //       ),
+                  //     ),
+                  //   );
+                  // }
+                  if (image != null) {
+                    uploadFile();
+                  }
+                },
+              )),
+              image != null ? Image.file(image!) : Text("No image selected"),
+            ],
+          ),
+        ));
+  }
+
+  Widget build(BuildContext context) {
+    return 
+        Center(
+          child: Column(
+            children: [
               MaterialButton(
                   color: Color.fromARGB(255, 4, 50, 88),
                   child: const Text("Pick Image from Camera",
@@ -344,21 +379,15 @@ class _ImageUploadState extends State<ImageUpload> {
                   onPressed: () {
                     pickImageC();
                   }),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               new Container(
                   child: new RaisedButton(
                 child: const Text('Submit Image'),
                 onPressed: () {
-                  if (_user != null) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => RequestFormSubmitted(
-                          user: _user,
-                        ),
-                      ),
-                    );
+                  if (image != null) {
+                    uploadFile();
                   }
                 },
               )),

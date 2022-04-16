@@ -41,6 +41,7 @@ dependencies:
   provider: ^5.0.0 
   convex_bottom_bar: ^3.0.0
   fluttertoast: ^8.0.9
+  permission_handler: ^9.2.0
 
 
 dev_dependencies:
