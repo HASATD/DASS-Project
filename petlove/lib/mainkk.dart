@@ -29,6 +29,17 @@ class MyCustomFormState extends State<MyCustomForm> {
   File? image;
 
   FirebaseStorage storage = FirebaseStorage.instance;
+  final descriptionController = TextEditingController();
+  final animalController = TextEditingController();
+  final locationController = TextEditingController();
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    descriptionController.dispose();
+    animalController.dispose();
+    locationController.dispose();
+    super.dispose();
+  }
 
   Future uploadFile() async {
     //if (image == null) return;
@@ -133,21 +144,21 @@ class MyCustomFormState extends State<MyCustomForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextFormField(
+            TextFormField(controller: animalController,
               decoration: const InputDecoration(
                 icon: const Icon(Icons.pets),
                 hintText: 'Enter Species of Animal',
                 labelText: 'Animal',
               ),
             ),
-            TextFormField(
+            TextFormField(controller: locationController,
               decoration: const InputDecoration(
                 icon: const Icon(Icons.my_location),
                 hintText: 'Enter location of Animal',
                 labelText: 'Location',
               ),
             ),
-            TextFormField(
+            TextFormField(controller: descriptionController,
               decoration: const InputDecoration(
                 icon: const Icon(Icons.report_sharp),
                 hintText: 'Give description of the Animal',
