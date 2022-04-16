@@ -9,107 +9,7 @@ import 'package:petlove/screens/home_page.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart';
-class AnimalDetails extends StatefulWidget {
-  const AnimalDetails({Key? key, required User user})
-      : _user = user,
-        super(key: key);
 
-  final User _user;
-
-  @override
-  _AnimalDetailsState createState() => _AnimalDetailsState();
-}
-
-class _AnimalDetailsState extends State<AnimalDetails> {
-  late User _user;
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    _user = widget._user;
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final appTitle = 'Enter Animal Details';
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 4, 50, 88),
-          title: Center(child: Text(appTitle)),
-          leading: Container(
-            color: Color.fromARGB(255, 4, 50, 88),
-            padding: EdgeInsets.all(3),
-            child: Flexible(
-              flex: 1,
-              child: IconButton(
-                tooltip: 'Go back',
-                icon: const Icon(Icons.arrow_back_ios),
-                alignment: Alignment.center,
-                iconSize: 20,
-                onPressed: () {
-                  if (_user != null) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(
-                          user: _user,
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
-        ),
-        body: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                decoration: const InputDecoration(
-                  icon: const Icon(Icons.pets),
-                  hintText: 'Enter Species of Animal',
-                  labelText: 'Animal',
-                ),
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  icon: const Icon(Icons.my_location),
-                  hintText: 'Enter location of Animal',
-                  labelText: 'Location',
-                ),
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  icon: const Icon(Icons.report_sharp),
-                  hintText: 'Give description of the Animal',
-                  labelText: 'Description',
-                ),
-              ),
-              new Container(
-                  padding: const EdgeInsets.only(left: 150.0, top: 40.0),
-                  child: new RaisedButton(
-                    child: const Text('Submit'),
-                    onPressed: () {
-                      if (_user != null) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => ImageUpload(
-                              user: _user,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  )),
-            ],
-          ),
-        ));
-  }
-}
 
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({Key? key, required User user})
@@ -126,11 +26,62 @@ class MyCustomForm extends StatefulWidget {
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   late User _user;
+  File? image;
+
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  Future uploadFile() async {
+    //if (image == null) return;
+    final fileName = basename(image!.path);
+    final destination = 'files/$fileName';
+
+    try {
+      final ref = FirebaseStorage.instance
+          .ref(destination)
+          .child('file/');
+      await ref.putFile(image!);
+    } catch (e) {
+      print('error occured');
+    }
+  }
+
   @override
   void initState() {
     _user = widget._user;
 
     super.initState();
+  }
+
+
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (image == null) return;
+
+      final imageTemp = File(image.path);
+
+      setState(() => this.image = imageTemp);
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
+
+  
+  Future pickImageC() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+
+      if (image == null) return;
+
+      final imageTemp = File(image.path);
+
+      setState(() => this.image = imageTemp);
+  
+      return imageTemp;
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
   }
 
   @override
@@ -203,6 +154,33 @@ class MyCustomFormState extends State<MyCustomForm> {
                 labelText: 'Description',
               ),
             ),
+            Center(
+              child: Column(
+                children: [
+                  MaterialButton(
+                      color: Color.fromARGB(255, 4, 50, 88),
+                      child: const Text("Pick Image from Camera",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold)),
+                      onPressed: () {
+                        pickImageC();
+                      }),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  new Container(
+                      child: new RaisedButton(
+                    child: const Text('Submit Image'),
+                    onPressed: () {
+                      if (image != null) {
+                        uploadFile();
+                      }
+                    },
+                  )),
+                  image != null ? Image.file(image!) : Text("No image selected"),
+                ],
+              ),
+            ),
             new Container(
                 padding: const EdgeInsets.only(left: 150.0, top: 40.0),
                 child: new RaisedButton(
@@ -211,7 +189,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     if (_user != null) {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => ImageUpload(
+                          builder: (context) => RequestFormSubmitted(
                             user: _user,
                           ),
                         ),
@@ -226,177 +204,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 }
 
-class ImageUpload extends StatefulWidget {
-  const ImageUpload({Key? key, required User user})
-      : _user = user,
-        super(key: key);
-
-  final User _user;
-
-  @override
-  _ImageUploadState createState() => _ImageUploadState();
-}
-
-class _ImageUploadState extends State<ImageUpload> {
-  late User _user;
-  File? image;
-
-  FirebaseStorage storage = FirebaseStorage.instance;
-
-  Future uploadFile() async {
-    //if (image == null) return;
-    final fileName = basename(image!.path);
-    final destination = 'files/$fileName';
-
-    try {
-      final ref = FirebaseStorage.instance
-          .ref(destination)
-          .child('file/');
-      await ref.putFile(image!);
-    } catch (e) {
-      print('error occured');
-    }
-  }
-
-  @override
-  void initState() {
-    _user = widget._user;
-
-    super.initState();
-  }
-
-
-  Future pickImage() async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-      if (image == null) return;
-
-      final imageTemp = File(image.path);
-
-      setState(() => this.image = imageTemp);
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
-  }
-
-  
-  Future pickImageC() async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.camera);
-
-      if (image == null) return;
-
-      final imageTemp = File(image.path);
-
-      setState(() => this.image = imageTemp);
-  
-      return imageTemp;
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Upload image of Animal"),
-          backgroundColor: Color.fromARGB(255, 4, 50, 88),
-          leading: Container(
-            color: Color.fromARGB(255, 4, 50, 88),
-            padding: EdgeInsets.all(3),
-            child: Flexible(
-              flex: 1,
-              child: IconButton(
-                tooltip: 'Go back',
-                icon: const Icon(Icons.arrow_back_ios),
-                alignment: Alignment.center,
-                iconSize: 20,
-                onPressed: () {
-                  if (_user != null) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => AnimalDetails(
-                          user: _user,
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              MaterialButton(
-                  color: Color.fromARGB(255, 4, 50, 88),
-                  child: const Text("Pick Image from Camera",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
-                  onPressed: () {
-                    pickImageC();
-                  }),
-              const SizedBox(
-                height: 20,
-              ),
-              new Container(
-                  child: new RaisedButton(
-                child: const Text('Submit Image'),
-                onPressed: () {
-                  // if (_user != null) {
-                  //   Navigator.of(context).pushReplacement(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => RequestFormSubmitted(
-                  //         user: _user,
-                  //       ),
-                  //     ),
-                  //   );
-                  // }
-                  if (image != null) {
-                    uploadFile();
-                  }
-                },
-              )),
-              image != null ? Image.file(image!) : Text("No image selected"),
-            ],
-          ),
-        ));
-  }
-
-  Widget build(BuildContext context) {
-    return 
-        Center(
-          child: Column(
-            children: [
-              MaterialButton(
-                  color: Color.fromARGB(255, 4, 50, 88),
-                  child: const Text("Pick Image from Camera",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
-                  onPressed: () {
-                    pickImageC();
-                  }),
-              const SizedBox(
-                height: 20,
-              ),
-              new Container(
-                  child: new RaisedButton(
-                child: const Text('Submit Image'),
-                onPressed: () {
-                  if (image != null) {
-                    uploadFile();
-                  }
-                },
-              )),
-              image != null ? Image.file(image!) : Text("No image selected"),
-            ],
-          ),
-        ));
-  }
-}
 
 class RequestFormSubmitted extends StatefulWidget {
   const RequestFormSubmitted({Key? key, required User user})
