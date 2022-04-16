@@ -10,7 +10,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart';
 
-
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({Key? key, required User user})
       : _user = user,
@@ -27,6 +26,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   late User _user;
   File? image;
+  String? imageURL;
 
   FirebaseStorage storage = FirebaseStorage.instance;
   final descriptionController = TextEditingController();
@@ -47,10 +47,12 @@ class MyCustomFormState extends State<MyCustomForm> {
     final destination = 'files/$fileName';
 
     try {
-      final ref = FirebaseStorage.instance
-          .ref(destination)
-          .child('file/');
-      await ref.putFile(image!);
+      final ref = FirebaseStorage.instance.ref(destination).child('file/');
+      UploadTask task1 = ref.putFile(image!);
+
+      String imgUrl = await (await task1).ref.getDownloadURL();
+
+      return imgUrl;
     } catch (e) {
       print('error occured');
     }
@@ -62,7 +64,6 @@ class MyCustomFormState extends State<MyCustomForm> {
 
     super.initState();
   }
-
 
   Future pickImage() async {
     try {
@@ -78,7 +79,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     }
   }
 
-  
   Future pickImageC() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
@@ -88,7 +88,7 @@ class MyCustomFormState extends State<MyCustomForm> {
       final imageTemp = File(image.path);
 
       setState(() => this.image = imageTemp);
-  
+
       return imageTemp;
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
@@ -144,21 +144,24 @@ class MyCustomFormState extends State<MyCustomForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextFormField(controller: animalController,
+            TextFormField(
+              controller: animalController,
               decoration: const InputDecoration(
                 icon: const Icon(Icons.pets),
                 hintText: 'Enter Species of Animal',
                 labelText: 'Animal',
               ),
             ),
-            TextFormField(controller: locationController,
+            TextFormField(
+              controller: locationController,
               decoration: const InputDecoration(
                 icon: const Icon(Icons.my_location),
                 hintText: 'Enter location of Animal',
                 labelText: 'Location',
               ),
             ),
-            TextFormField(controller: descriptionController,
+            TextFormField(
+              controller: descriptionController,
               decoration: const InputDecoration(
                 icon: const Icon(Icons.report_sharp),
                 hintText: 'Give description of the Animal',
@@ -172,7 +175,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                       color: Color.fromARGB(255, 4, 50, 88),
                       child: const Text("Pick Image from Camera",
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold)),
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                       onPressed: () {
                         pickImageC();
                       }),
@@ -184,11 +188,16 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: const Text('Submit Image'),
                     onPressed: () {
                       if (image != null) {
-                        uploadFile();
+                        uploadFile().then((value) {
+                          this.imageURL = value;
+                          print(this.imageURL);
+                        });
                       }
                     },
                   )),
-                  image != null ? Image.file(image!) : Text("No image selected"),
+                  image != null
+                      ? Image.file(image!)
+                      : Text("No image selected"),
                 ],
               ),
             ),
@@ -214,7 +223,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     );
   }
 }
-
 
 class RequestFormSubmitted extends StatefulWidget {
   const RequestFormSubmitted({Key? key, required User user})
