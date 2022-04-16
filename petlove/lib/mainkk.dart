@@ -9,6 +9,8 @@ import 'package:petlove/screens/home_page.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({Key? key, required User user})
@@ -195,9 +197,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                       }
                     },
                   )),
-                  image != null
-                      ? Image.file(image!)
-                      : Text("No image selected"),
+                  // image != null
+                  //     ? Image.file(image!)
+                  //     : Text("No image selected"),
                 ],
               ),
             ),
@@ -206,15 +208,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                 child: new RaisedButton(
                   child: const Text('Submit'),
                   onPressed: () {
-                    if (_user != null) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => RequestFormSubmitted(
-                            user: _user,
-                          ),
-                        ),
-                      );
-                    }
+                    FirebaseFirestore.instance.collection('Request').add({
+                      'Description': descriptionController.text,
+                      'UserID': _user.uid,
+                      'Location': locationController.text,
+                      'ImageURL': this.imageURL,
+                      'Animal': animalController.text,
+                    });
                   },
                 )),
           ],
