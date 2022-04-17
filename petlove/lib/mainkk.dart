@@ -226,7 +226,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                             'Location': locationController.text,
                             'ImageURL': this.imageURL,
                             'Animal': animalController.text,
-                          });
+                          }).then((value) => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RequestFormSubmitted(
+                                          user: _user,
+                                        )),
+                              ));
                         },
                       )),
                     ),
