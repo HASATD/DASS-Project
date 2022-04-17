@@ -185,6 +185,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                 labelText: 'Description',
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
             Center(
               child: Column(
                 children: [
@@ -197,6 +200,19 @@ class MyCustomFormState extends State<MyCustomForm> {
                       onPressed: () {
                         pickImageC();
                       }),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  image != null
+                      ? Container(
+                          height: 300,
+                          width: 300,
+                          child: Image.file(
+                            image!,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      : Container(),
                   const SizedBox(
                     height: 20,
                   ),
