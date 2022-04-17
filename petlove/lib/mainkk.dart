@@ -212,7 +212,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                           }),
                     ),
                   ] else if (uploadStatus == 1) ...[
-                    Center(child: Text('Uploading')),
+                    //Center(child: Text('Uploading')),
+                    CircularProgressIndicator(),
                   ] else if (uploadStatus == 2) ...[
                     Center(
                       child: new Container(
