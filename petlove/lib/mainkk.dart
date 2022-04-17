@@ -33,6 +33,8 @@ class MyCustomFormState extends State<MyCustomForm> {
   String? imageURL;
   bool uploadingDone = false;
 
+  int uploadStatus = 0;
+
   FirebaseStorage storage = FirebaseStorage.instance;
   final descriptionController = TextEditingController();
   final animalController = TextEditingController();
@@ -44,6 +46,16 @@ class MyCustomFormState extends State<MyCustomForm> {
     animalController.dispose();
     locationController.dispose();
     super.dispose();
+  }
+
+  uploadImage() async {
+    if (image != null) {
+      String response = await uploadFile();
+      setState(() {
+        imageURL = response;
+        uploadStatus = 2;
+      });
+    }
   }
 
   Future uploadFile() async {
@@ -188,53 +200,39 @@ class MyCustomFormState extends State<MyCustomForm> {
                   const SizedBox(
                     height: 20,
                   ),
-                  uploadingDone
-                      ? Text('Upload done')
-                      : new Container(
-                          child: new RaisedButton(
+                  if (uploadStatus == 0) ...[
+                    new Container(
+                      child: new RaisedButton(
                           child: const Text('Submit Image'),
                           onPressed: () {
-                            // if (image != null) {
-                            //   uploadFile().then((value) {
-                            //     this.imageURL = value;
-                            //     setState(() {
-                            //       uploadingDone = true;
-                            //     });
-                            //     // print(this.imageURL);
-                            //   });
-                            // }
-                            FutureBuilder(
-                                future: uploadFile(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.done) {
-                                    final data = snapshot.data as String;
-                                    return Text('$data');
-                                  } else {
-                                    return Text('Uploading...');
-                                  }
-                                });
-                          },
-                        )),
+                            uploadImage();
+                            setState(() {
+                              uploadStatus = 1;
+                            });
+                          }),
+                    ),
+                  ] else if (uploadStatus == 1) ...[
+                    Center(child: Text('Uploading')),
+                  ] else if (uploadStatus == 2) ...[
+                    Center(
+                      child: new Container(
+                          child: new RaisedButton(
+                        child: const Text('Submit'),
+                        onPressed: () {
+                          FirebaseFirestore.instance.collection('Request').add({
+                            'Description': descriptionController.text,
+                            'UserID': _user.uid,
+                            'Location': locationController.text,
+                            'ImageURL': this.imageURL,
+                            'Animal': animalController.text,
+                          });
+                        },
+                      )),
+                    ),
+                  ],
                 ],
               ),
             ),
-            uploadingDone
-                ? new Container(
-                    padding: const EdgeInsets.only(left: 150.0, top: 40.0),
-                    child: new RaisedButton(
-                      child: const Text('Submit'),
-                      onPressed: () {
-                        FirebaseFirestore.instance.collection('Request').add({
-                          'Description': descriptionController.text,
-                          'UserID': _user.uid,
-                          'Location': locationController.text,
-                          'ImageURL': this.imageURL,
-                          'Animal': animalController.text,
-                        });
-                      },
-                    ))
-                : Text('Please upload image'),
           ],
         ),
       ),
