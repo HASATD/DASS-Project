@@ -42,6 +42,9 @@ dependencies:
   convex_bottom_bar: ^3.0.0
   fluttertoast: ^8.0.9
   permission_handler: ^9.2.0
+  geolocator: ^8.2.0
+  google_maps_flutter: ^2.1.3
+  geoflutterfire: ^3.0.3
 
 
 dev_dependencies:
