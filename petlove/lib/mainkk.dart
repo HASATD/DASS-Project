@@ -15,6 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class MyCustomForm extends StatefulWidget {
   const MyCustomForm({Key? key, required User user})
@@ -29,11 +30,14 @@ class MyCustomForm extends StatefulWidget {
 }
 
 class MyCustomFormState extends State<MyCustomForm> {
+  Geoflutterfire geo = Geoflutterfire();
   final _formKey = GlobalKey<FormState>();
   late User _user;
   File? image;
   String? imageURL;
   bool uploadingDone = false;
+  late LatLng location;
+  late GeoFirePoint geopoint;
 
   int uploadStatus = 0;
 
@@ -64,7 +68,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     //if (image == null) return;
     final fileName = basename(image!.path);
     final destination = 'files/$fileName';
-
     try {
       final ref = FirebaseStorage.instance.ref(destination).child('file/');
       UploadTask task1 = ref.putFile(image!);
@@ -114,6 +117,22 @@ class MyCustomFormState extends State<MyCustomForm> {
     }
   }
 
+  void _awaitReturnValueFromSecondScreen(BuildContext context) async {
+
+    // start the SecondScreen and wait for it to finish with a result
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => setCurrentLocation(user: _user,),
+        ));
+
+    // after the SecondScreen result comes back update the Text widget with it
+    setState(() {
+      location = result;
+      geopoint = geo.point(latitude: location.latitude, longitude: location.longitude);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,7 +156,7 @@ class MyCustomFormState extends State<MyCustomForm> {
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
         title: Text(
-          'User Account',
+          'New Request',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -172,13 +191,14 @@ class MyCustomFormState extends State<MyCustomForm> {
                       color: Colors.white,
                       fontWeight: FontWeight.bold)),
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => setCurrentLocation(
-                        user: _user,
-                      ),
-                    ),
-                  );
+                _awaitReturnValueFromSecondScreen(context);
+                // final location = await Navigator.of(context).push(
+                //     MaterialPageRoute(
+                //       builder: (context) => setCurrentLocation(
+                //         user: _user,
+                //       ),
+                //     ),
+                //   );
               }),
             TextFormField(
               controller: descriptionController,
@@ -226,7 +246,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                           FirebaseFirestore.instance.collection('Request').add({
                             'Description': descriptionController.text,
                             'UserID': _user.uid,
-                            'Location': locationController.text,
+                            'Location': geopoint.data,
                             'ImageURL': this.imageURL,
                             'Animal': animalController.text,
                           }).then((value) => Navigator.push(
@@ -392,6 +412,15 @@ class _setCurrentLocationState extends State<setCurrentLocation> {
     //currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
+    void _sendDataBack(BuildContext context) {
+    if(!locationSetFlag){
+      newLatitude = currentPosition.latitude;
+      newLongitude = currentPosition.longitude;
+    }
+    LatLng latLngToSendBack = LatLng(newLatitude, newLongitude);
+    Navigator.pop(context, latLngToSendBack);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -424,29 +453,50 @@ class _setCurrentLocationState extends State<setCurrentLocation> {
         future: _determinePosition(),
         builder: (BuildContext context,AsyncSnapshot<Position> snapshot) {
           if (snapshot.hasData) {
-            return GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
-                zoom: 15,
+            return Stack(
+              alignment: Alignment.center,
+              children:[ GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
+                  zoom: 15,
+                ),
+                onMapCreated: (controller) =>_googleMapController = controller,
+                markers: Set<Marker>.of(
+                  <Marker>{
+                    Marker(
+                    markerId: const MarkerId('currentLocation'),
+                    position: locationSetFlag ? LatLng(newLatitude, newLongitude) : LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
+                    infoWindow: InfoWindow(
+                      title: 'Your Current Location',
+                    ),
+                  )},
+                ),
+                onTap: (LatLng position) {
+                  setState(() {
+                    locationSetFlag = true;
+                    newLatitude = position.latitude;
+                    newLongitude = position.longitude;
+                  });
+                },
               ),
-              onMapCreated: (controller) =>_googleMapController = controller,
-              markers: Set<Marker>.of(
-                <Marker>{
-                  Marker(
-                  markerId: const MarkerId('currentLocation'),
-                  position: locationSetFlag ? LatLng(newLatitude, newLongitude) : LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
-                  infoWindow: InfoWindow(
-                    title: 'Your Current Location',
-                  ),
-                )},
-              ),
-              onTap: (LatLng position) {
-                setState(() {
-                  locationSetFlag = true;
-                  newLatitude = position.latitude;
-                  newLongitude = position.longitude;
-                });
-              },
+              Positioned(
+                bottom: 15,
+                child: MaterialButton(
+                padding: EdgeInsets.only(right:12, left: 12, top: 8, bottom: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+                elevation: 10,
+                color: Color.fromARGB(255, 4, 50, 88),
+                child: const Text("Submit current location",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20)),
+                onPressed: () {
+                  _sendDataBack(context);
+                }),
+              )
+              ]
             );
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
