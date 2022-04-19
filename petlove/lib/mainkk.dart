@@ -103,7 +103,8 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   Future pickImageC() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      final image = await ImagePicker()
+          .pickImage(source: ImageSource.camera, imageQuality: 50);
 
       if (image == null) return;
 
@@ -118,18 +119,20 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 
   void _awaitReturnValueFromSecondScreen(BuildContext context) async {
-
     // start the SecondScreen and wait for it to finish with a result
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => setCurrentLocation(user: _user,),
+          builder: (context) => setCurrentLocation(
+            user: _user,
+          ),
         ));
 
     // after the SecondScreen result comes back update the Text widget with it
     setState(() {
       location = result;
-      geopoint = geo.point(latitude: location.latitude, longitude: location.longitude);
+      geopoint =
+          geo.point(latitude: location.latitude, longitude: location.longitude);
     });
   }
 
@@ -176,40 +179,53 @@ class MyCustomFormState extends State<MyCustomForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextFormField(
-              controller: animalController,
-              decoration: const InputDecoration(
-                icon: const Icon(Icons.pets),
-                hintText: 'Enter Species of Animal',
-                labelText: 'Animal',
+            Padding(
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+              child: TextFormField(
+                controller: animalController,
+                decoration: const InputDecoration(
+                  icon: const Icon(Icons.pets),
+                  hintText: 'Enter Species of Animal',
+                  labelText: 'Animal',
+                ),
               ),
             ),
-            MaterialButton(
-              color: Color.fromARGB(255, 4, 50, 88),
-              child: const Text("Choose current location",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-              onPressed: () {
-                _awaitReturnValueFromSecondScreen(context);
-                // final location = await Navigator.of(context).push(
-                //     MaterialPageRoute(
-                //       builder: (context) => setCurrentLocation(
-                //         user: _user,
-                //       ),
-                //     ),
-                //   );
-              }),
-            TextFormField(
-              controller: descriptionController,
-              decoration: const InputDecoration(
-                icon: const Icon(Icons.report_sharp),
-                hintText: 'Give description of the Animal',
-                labelText: 'Description',
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: TextFormField(
+                controller: descriptionController,
+                decoration: const InputDecoration(
+                  icon: const Icon(Icons.report_sharp),
+                  hintText: 'Give description of the Animal',
+                  labelText: 'Description',
+                ),
               ),
             ),
-            SizedBox(
-              height: 20,
+            const SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: MaterialButton(
+                  color: Color.fromARGB(255, 4, 50, 88),
+                  child: const Text("Choose current location",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
+                  onPressed: () {
+                    _awaitReturnValueFromSecondScreen(context);
+                    // final location = await Navigator.of(context).push(
+                    //     MaterialPageRoute(
+                    //       builder: (context) => setCurrentLocation(
+                    //         user: _user,
+                    //       ),
+                    //     ),
+                    //   );
+                  }),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Center(
               child: Column(
@@ -237,11 +253,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                         )
                       : Container(),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   if (uploadStatus == 0) ...[
                     new Container(
-                      child: new RaisedButton(
+                      child: new MaterialButton(
+                          color: Color.fromARGB(255, 4, 50, 88),
                           child: const Text('Submit Image'),
                           onPressed: () {
                             uploadImage();
@@ -365,9 +382,9 @@ class _RequestFormSubmittedState extends State<RequestFormSubmitted> {
 }
 
 class setCurrentLocation extends StatefulWidget {
-  const setCurrentLocation({ Key? key, required User user })
-    : _user = user,
-      super(key: key);
+  const setCurrentLocation({Key? key, required User user})
+      : _user = user,
+        super(key: key);
   final User _user;
   @override
   State<setCurrentLocation> createState() => _setCurrentLocationState();
@@ -396,7 +413,7 @@ class _setCurrentLocationState extends State<setCurrentLocation> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       // Location services are not enabled don't continue
-      // accessing the position and request users of the 
+      // accessing the position and request users of the
       // App to enable the location services.
       return Future.error('Location services are disabled.');
     }
@@ -407,29 +424,31 @@ class _setCurrentLocationState extends State<setCurrentLocation> {
       if (permission == LocationPermission.denied) {
         // Permissions are denied, next time you could try
         // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale 
+        // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
       }
     }
-    
+
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately. 
+      // Permissions are denied forever, handle appropriately.
       return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
-    } 
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
+    currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
     return Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
-    //currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
-    void _sendDataBack(BuildContext context) {
-    if(!locationSetFlag){
+  void _sendDataBack(BuildContext context) {
+    if (!locationSetFlag) {
       newLatitude = currentPosition.latitude;
       newLongitude = currentPosition.longitude;
     }
@@ -467,25 +486,29 @@ class _setCurrentLocationState extends State<setCurrentLocation> {
       ),
       body: FutureBuilder(
         future: _determinePosition(),
-        builder: (BuildContext context,AsyncSnapshot<Position> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<Position> snapshot) {
           if (snapshot.hasData) {
-            return Stack(
-              alignment: Alignment.center,
-              children:[ GoogleMap(
+            return Stack(alignment: Alignment.center, children: [
+              GoogleMap(
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
+                  target:
+                      LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
                   zoom: 15,
                 ),
-                onMapCreated: (controller) =>_googleMapController = controller,
+                onMapCreated: (controller) => _googleMapController = controller,
                 markers: Set<Marker>.of(
                   <Marker>{
                     Marker(
-                    markerId: const MarkerId('currentLocation'),
-                    position: locationSetFlag ? LatLng(newLatitude, newLongitude) : LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
-                    infoWindow: InfoWindow(
-                      title: 'Your Current Location',
-                    ),
-                  )},
+                      markerId: const MarkerId('currentLocation'),
+                      position: locationSetFlag
+                          ? LatLng(newLatitude, newLongitude)
+                          : LatLng(snapshot.data!.latitude,
+                              snapshot.data!.longitude),
+                      infoWindow: InfoWindow(
+                        title: 'Your Current Location',
+                      ),
+                    )
+                  },
                 ),
                 onTap: (LatLng position) {
                   setState(() {
@@ -498,22 +521,20 @@ class _setCurrentLocationState extends State<setCurrentLocation> {
               Positioned(
                 bottom: 15,
                 child: MaterialButton(
-                padding: EdgeInsets.only(right:12, left: 12, top: 8, bottom: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-                elevation: 10,
-                color: Color.fromARGB(255, 4, 50, 88),
-                child: const Text("Submit current location",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20)),
-                onPressed: () {
-                  _sendDataBack(context);
-                }),
+                    padding:
+                        EdgeInsets.only(right: 12, left: 12, top: 8, bottom: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    elevation: 10,
+                    color: Color.fromARGB(255, 4, 50, 88),
+                    child: const Text("Submit current location",
+                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                    onPressed: () {
+                      _sendDataBack(context);
+                    }),
               )
-              ]
-            );
+            ]);
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           } else {
