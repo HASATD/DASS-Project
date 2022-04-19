@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:petlove/utils/authentication.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class NGORequestsDisplay extends StatefulWidget {
   const NGORequestsDisplay({Key? key, required User user})
@@ -127,8 +128,20 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                     child: Container(
                       height: 720,
                       width: double.infinity,
-                      child: Image.network(
-                        data['ImageURL'],
+                      // child: Image.network(
+                      //   data['ImageURL'],
+                      //   fit: BoxFit.contain,
+                      // ),
+                      child: CachedNetworkImage(
+                        imageUrl: data['ImageURL'],
+                        placeholder: (context, url) => Center(
+                          child: SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                         fit: BoxFit.contain,
                       ),
                     ),
