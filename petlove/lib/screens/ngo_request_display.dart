@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:petlove/models/User_model.dart';
 import 'package:petlove/utils/authentication.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class NGORequestsDisplay extends StatefulWidget {
-  const NGORequestsDisplay({Key? key, required User user})
+  const NGORequestsDisplay({Key? key, required UserModel user})
       : _user = user,
         super(key: key);
 
-  final User _user;
+  final UserModel _user;
 
   @override
   State<NGORequestsDisplay> createState() => _NGORequestsDisplayState();

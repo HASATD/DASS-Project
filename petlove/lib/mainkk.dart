@@ -384,16 +384,16 @@ class _RequestFormSubmittedState extends State<RequestFormSubmitted> {
 }
 
 class setCurrentLocation extends StatefulWidget {
-  const setCurrentLocation({Key? key, required User user})
+  const setCurrentLocation({Key? key, required UserModel user})
       : _user = user,
         super(key: key);
-  final User _user;
+  final UserModel _user;
   @override
   State<setCurrentLocation> createState() => _setCurrentLocationState();
 }
 
 class _setCurrentLocationState extends State<setCurrentLocation> {
-  late User _user;
+  late UserModel _user;
   late GoogleMapController _googleMapController;
   late Marker _currentPositionMarker;
   late Position currentPosition;
