@@ -9,11 +9,11 @@ import 'package:petlove/widgets/google_sign_in_button.dart';
 import 'package:petlove/screens/account_page.dart';
 import 'package:petlove/mainkk.dart';
 import 'package:flutter/material.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:petlove/screens/account_page.dart';
 import 'package:petlove/mainkk.dart';
 import 'package:petlove/screens/register_NGO.dart';
 import 'package:petlove/screens/join_NGO.dart';
+import 'package:petlove/screens/ngo_request_display.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required UserModel user})
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),**/ //Container
-          title: Text('Welcome to petcare app'),
+          title: const Text('Welcome to petcare app'),
           centerTitle: true,
         ),
         drawer: Drawer(
@@ -91,9 +91,22 @@ class _HomePageState extends State<HomePage> {
               title: Text("Join NGO", style: TextStyle(fontSize: 18)),
               onTap: () {
                 Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NGOsDisplay(
+                        user: _user,
+                      ),
+                    ));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.request_quote),
+              title: Text("Help Requests", style: TextStyle(fontSize: 20)),
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => NGOsDisplay(
+                      builder: (context) => NGORequestsDisplay(
                             user: _user,
                           )),
                 );
