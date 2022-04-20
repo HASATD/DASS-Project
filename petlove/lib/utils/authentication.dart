@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:petlove/screens/home_page.dart';
 import 'package:petlove/screens/user_info_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:petlove/models/User_model.dart';
 
 class Authentication {
   static Future<FirebaseApp> initializeFirebase({
@@ -16,12 +17,17 @@ class Authentication {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
 
     User? user = FirebaseAuth.instance.currentUser;
+    UserModel? fireuser = UserModel();
 
     if (user != null) {
+      fireuser.displayName = user.displayName;
+      fireuser.email = user.email;
+      fireuser.uid = user.uid;
+      fireuser.photoURL = user.photoURL;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomePage(
-            user: user,
+            user: fireuser,
           ),
         ),
       );
@@ -30,9 +36,11 @@ class Authentication {
     return firebaseApp;
   }
 
-  static Future<User?> signInWithGoogle({required BuildContext context}) async {
+  static Future<UserModel?> signInWithGoogle(
+      {required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
+    UserModel fireuser = UserModel();
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
     if (kIsWeb) {
@@ -80,13 +88,27 @@ class Authentication {
                 .collection('users')
                 .doc(userCredential.user!.uid)
                 .set({
-              'username': userCredential.user!.displayName,
+              'displayName': userCredential.user!.displayName,
               'uid': userCredential.user!.uid,
               'email': userCredential.user!.email,
-              'photo url': userCredential.user!.photoURL
+              'photoURL': userCredential.user!.photoURL,
+              'ngo_uid': null,
             });
             user = userCredential.user;
-          } else {}
+            fireuser.displayName = userCredential.user!.displayName;
+            fireuser.uid = userCredential.user!.uid;
+            fireuser.email = userCredential.user!.email;
+            fireuser.photoURL = userCredential.user!.photoURL;
+            fireuser.ngo_uid = null;
+          } else {
+            Map<String, dynamic> data =
+                variable.data()! as Map<String, dynamic>;
+            fireuser.displayName = data['displayName'];
+            fireuser.uid = data['uid'];
+            fireuser.email = data['email'];
+            fireuser.photoURL = data['photoURL'];
+            fireuser.photoURL = data['ngo_uid'];
+          }
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -113,7 +135,7 @@ class Authentication {
       }
     }
 
-    return user;
+    return fireuser;
   }
 
   static SnackBar customSnackBar({required String content}) {

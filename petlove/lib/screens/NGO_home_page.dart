@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
-import 'package:petlove/models/User_model.dart';
 import 'package:petlove/res/custom_colors.dart';
 import 'package:petlove/utils/authentication.dart';
 import 'package:petlove/widgets/google_sign_in_button.dart';
@@ -15,23 +14,23 @@ import 'package:petlove/mainkk.dart';
 import 'package:petlove/screens/register_NGO.dart';
 import 'package:petlove/screens/join_NGO.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required UserModel user})
-      : _user = user,
+class NGOHomePage extends StatefulWidget {
+  const NGOHomePage({Key? key, required String? uid})
+      : _uid = uid,
         super(key: key);
 
-  final UserModel _user;
+  final String? _uid;
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _NGOHomePageState createState() => _NGOHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  late UserModel _user;
+class _NGOHomePageState extends State<NGOHomePage> {
+  late String? _uid;
 
   @override
   void initState() {
-    _user = widget._user;
+    _uid = widget._uid;
 
     super.initState();
   }
@@ -81,22 +80,35 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => NGOregistration(
-                            uid: _user.uid,
+                            uid: _uid,
                           )),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.add_task_outlined),
-              title: Text("Join NGO", style: TextStyle(fontSize: 18)),
+              leading: Icon(Icons.group),
+              title: Text("Team Members", style: TextStyle(fontSize: 18)),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NGOsDisplay(
-                            user: _user,
-                          )),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => AccountPage(
+                //             user: _user,
+                //           )),
+                // );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.add_task_outlined),
+              title: Text("Join Requests", style: TextStyle(fontSize: 18)),
+              onTap: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => AccountPage(
+                //             user: _user,
+                //           )),
+                // );
               },
             ),
           ]),
@@ -114,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                 Row(),
                 SizedBox(height: 16.0),
                 Text(
-                  'Hi ' + _user.displayName! + '!',
+                  'Hi!',
                   style: TextStyle(
                     color: Color.fromARGB(255, 4, 50, 88),
                     fontSize: 26,
@@ -126,17 +138,18 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
+          // should display available requests within 30kms radius
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MyCustomForm(
-                        user: _user,
-                      )),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //       builder: (context) => MyCustomForm(
+            //             user: _user,
+            //           )),
+            // );
           },
-          tooltip: 'Request',
-          child: const Icon(Icons.add),
+          tooltip: 'Accept',
+          child: const Icon(Icons.assignment_turned_in_outlined),
         ),
         floatingActionButtonLocation: fabLocation,
         bottomNavigationBar: BottomAppBar(
@@ -150,13 +163,13 @@ class _HomePageState extends State<HomePage> {
                   tooltip: 'Home',
                   icon: const Icon(Icons.home, size: 35),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                user: _user,
-                              )),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => NGOHomePage(
+                    //             user: _user,
+                    //           )),
+                    // );
                   },
                 ),
                 if (centerLocations.contains(fabLocation)) const Spacer(),
@@ -164,13 +177,13 @@ class _HomePageState extends State<HomePage> {
                   tooltip: 'Profile',
                   icon: const Icon(Icons.account_circle, size: 35),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AccountPage(
-                                user: _user,
-                              )),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => AccountPage(
+                    //             user: _user,
+                    //           )),
+                    // );
                   },
                 ),
               ],

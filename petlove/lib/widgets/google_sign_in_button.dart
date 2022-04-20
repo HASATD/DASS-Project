@@ -2,11 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
+import 'package:petlove/models/User_model.dart';
 import 'package:petlove/res/custom_colors.dart';
 import 'package:petlove/screens/home_page.dart';
 import 'package:petlove/utils/authentication.dart';
 import 'package:petlove/widgets/google_sign_in_button.dart';
 import 'package:petlove/screens/user_info_screen.dart';
+import 'package:petlove/screens/account_page.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   @override
@@ -38,7 +40,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   _isSigningIn = true;
                 });
 
-                User? user =
+                UserModel? user =
                     await Authentication.signInWithGoogle(context: context);
 
                 setState(() {

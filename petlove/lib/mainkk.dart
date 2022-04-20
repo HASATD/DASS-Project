@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:petlove/models/User_model.dart';
 import 'package:petlove/screens/home_page.dart';
 
 // class MyApp extends StatelessWidget {
@@ -27,18 +28,18 @@ import 'package:petlove/screens/home_page.dart';
 // }
 
 class AnimalDetails extends StatefulWidget {
-  const AnimalDetails({Key? key, required User user})
+  const AnimalDetails({Key? key, required UserModel user})
       : _user = user,
         super(key: key);
 
-  final User _user;
+  final UserModel _user;
 
   @override
   _AnimalDetailsState createState() => _AnimalDetailsState();
 }
 
 class _AnimalDetailsState extends State<AnimalDetails> {
-  late User _user;
+  late UserModel _user;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -129,11 +130,11 @@ class _AnimalDetailsState extends State<AnimalDetails> {
 }
 
 class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({Key? key, required User user})
+  const MyCustomForm({Key? key, required UserModel user})
       : _user = user,
         super(key: key);
 
-  final User _user;
+  final UserModel _user;
   @override
   MyCustomFormState createState() {
     return MyCustomFormState();
@@ -142,7 +143,7 @@ class MyCustomForm extends StatefulWidget {
 
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
-  late User _user;
+  late UserModel _user;
   @override
   void initState() {
     _user = widget._user;
@@ -244,18 +245,18 @@ class MyCustomFormState extends State<MyCustomForm> {
 }
 
 class ImageUpload extends StatefulWidget {
-  const ImageUpload({Key? key, required User user})
+  const ImageUpload({Key? key, required UserModel user})
       : _user = user,
         super(key: key);
 
-  final User _user;
+  final UserModel _user;
 
   @override
   _ImageUploadState createState() => _ImageUploadState();
 }
 
 class _ImageUploadState extends State<ImageUpload> {
-  late User _user;
+  late UserModel _user;
 
   @override
   void initState() {
@@ -370,18 +371,18 @@ class _ImageUploadState extends State<ImageUpload> {
 }
 
 class RequestFormSubmitted extends StatefulWidget {
-  const RequestFormSubmitted({Key? key, required User user})
+  const RequestFormSubmitted({Key? key, required UserModel user})
       : _user = user,
         super(key: key);
 
-  final User _user;
+  final UserModel _user;
 
   @override
   _RequestFormSubmittedState createState() => _RequestFormSubmittedState();
 }
 
 class _RequestFormSubmittedState extends State<RequestFormSubmitted> {
-  late User _user;
+  late UserModel _user;
 
   @override
   void initState() {

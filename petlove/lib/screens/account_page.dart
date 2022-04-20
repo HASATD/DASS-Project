@@ -2,25 +2,27 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
+import 'package:petlove/models/User_model.dart';
 import 'package:petlove/res/custom_colors.dart';
 import 'package:petlove/screens/home_page.dart';
 import 'package:petlove/utils/authentication.dart';
 import 'package:petlove/widgets/google_sign_in_button.dart';
 import 'package:petlove/screens/sign_in_screen.dart';
+import 'package:petlove/models/User_model.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({Key? key, required User user})
+  const AccountPage({Key? key, required UserModel user})
       : _user = user,
         super(key: key);
 
-  final User _user;
+  final UserModel _user;
 
   @override
   _AccountPageState createState() => _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
-  late User _user;
+  late UserModel _user;
   bool _isSigningOut = false;
 
   @override
