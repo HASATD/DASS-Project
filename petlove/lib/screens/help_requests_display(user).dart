@@ -6,18 +6,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class NGORequestsDisplay extends StatefulWidget {
-  const NGORequestsDisplay({Key? key, required UserModel user})
+class HelpRequestDisplayUser extends StatefulWidget {
+  const HelpRequestDisplayUser({Key? key, required UserModel user})
       : _user = user,
         super(key: key);
 
   final UserModel _user;
 
   @override
-  State<NGORequestsDisplay> createState() => _NGORequestsDisplayState();
+  State<HelpRequestDisplayUser> createState() => _HelpRequestDisplayUserState();
 }
 
-class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
+class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final CollectionReference _requestReference =
@@ -54,8 +54,7 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
         title: Text(
-          'Current Requests',
-          style: TextStyle(color: Colors.white),
+          'Current Requests',ding] argument must not be null. Colors.white),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -74,42 +73,7 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-
-                // return Padding(
-                //   padding: const EdgeInsets.all(1.0),
-                //   child: GestureDetector(
-                //     onTap: () {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //             builder: (context) => RequestDetail(
-                //                   document: data,
-                //                 )),
-                //       );
-                //     }, // Image tapped
-                //     child: Container(
-                //       height: 720,
-                //       width: double.infinity,
-                //       // child: Image.network(
-                //       //   data['ImageURL'],
-                //       //   fit: BoxFit.contain,
-                //       // ),
-                //       child: CachedNetworkImage(
-                //         imageUrl: data['ImageURL'],
-                //         placeholder: (context, url) => Center(
-                //           child: SizedBox(
-                //             height: 100,
-                //             width: 100,
-                //             child: CircularProgressIndicator(),
-                //           ),
-                //         ),
-                //         errorWidget: (context, url, error) => Icon(Icons.error),
-                //         fit: BoxFit.contain,
-                //       ),
-                //     ),
-                //   ),
-                // );
-
+              
                 return Padding(
                   padding: const EdgeInsets.all(1.0),
                   child: GestureDetector(
@@ -160,24 +124,6 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                                     style: TextStyle(fontSize: 15),
                                   ),
                                   onPressed: () async {
-                                    // if (_user.ngo_uid != null) {
-                                    //   Fluttertoast.showToast(
-                                    //       msg:
-                                    //           "You can join only if you are not in any NGOs...");
-                                    // } else {
-                                    //   await FirebaseFirestore.instance
-                                    //       .collection('users')
-                                    //       .doc(_user.uid)
-                                    //       .update({
-                                    //         'ngo_uid': data!['uid'],
-                                    //       })
-                                    //       .then((value) => print("success"))
-                                    //       .catchError((error) =>
-                                    //           print('Failed: $error'));
-
-                                    //   Fluttertoast.showToast(
-                                    //       msg: "Request sent Successfully!");
-                                    // }
                                   },
                                 ),
                               ),
@@ -338,3 +284,4 @@ class _RequestInfoState extends State<RequestInfo> {
             )));
   }
 }
+
