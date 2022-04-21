@@ -13,6 +13,11 @@ import 'package:petlove/screens/account_page.dart';
 import 'package:petlove/mainkk.dart';
 import 'package:petlove/screens/register_NGO.dart';
 import 'package:petlove/screens/join_NGO.dart';
+import 'package:petlove/models/NGO_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:petlove/screens/pending_applications.dart';
+import 'package:petlove/models/User_model.dart';
+import 'package:petlove/screens/home_page.dart';
 
 class NGOHomePage extends StatefulWidget {
   const NGOHomePage({Key? key, required String? uid})
@@ -75,14 +80,25 @@ class _NGOHomePageState extends State<NGOHomePage> {
             ListTile(
               leading: Icon(Icons.change_circle_outlined),
               title: Text("Switch Account", style: TextStyle(fontSize: 18)),
-              onTap: () {
+              onTap: () async {
+                UserModel fireuser = UserModel();
+                DocumentSnapshot variable = await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(_uid)
+                    .get();
+                Map<String, dynamic> data =
+                    variable.data()! as Map<String, dynamic>;
+                fireuser.displayName = data['displayName'];
+                fireuser.uid = data['uid'];
+                fireuser.email = data['email'];
+                fireuser.photoURL = data['photoURL'];
+                fireuser.ngo_uid = data['ngo_uid'];
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NGOregistration(
-                            uid: _uid,
-                          )),
-                );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(
+                              user: fireuser,
+                            )));
               },
             ),
             ListTile(
@@ -109,6 +125,36 @@ class _NGOHomePageState extends State<NGOHomePage> {
                 //             user: _user,
                 //           )),
                 // );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.pending_outlined),
+              title: Text("Applications", style: TextStyle(fontSize: 18)),
+              onTap: () async {
+                DocumentSnapshot variable = await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(_uid)
+                    .get();
+                print(_uid);
+                Map<String, dynamic> NGOdata =
+                    variable.data()! as Map<String, dynamic>;
+
+                NGOModel NGO = NGOModel();
+                NGO.uid = _uid;
+                NGO.Organization = NGOdata['Organization'];
+                NGO.certificate = NGOdata['certificate'];
+                NGO.dpURL = NGOdata['dpURL'];
+                NGO.email = NGOdata['email'];
+                NGO.phoneNumber = NGOdata['phoneNumber'];
+                NGO.verified = NGOdata['verified'];
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => pendingappls(
+                            NGO: NGO,
+                          )),
+                );
               },
             ),
           ]),
