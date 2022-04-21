@@ -82,8 +82,8 @@ class _pendingapplsState extends State<pendingappls> {
             return ListView(
               children: snapshot.data!.docs
                   .where((element) =>
-                      element!['ngo_uid'] == _NGO.uid &&
-                      element!['status'] == "ongoing")
+                      element['ngo_uid'] == _NGO.uid &&
+                      element['status'] == "ongoing")
                   .map((DocumentSnapshot document) {
                 Map<String, dynamic>? data =
                     document.data()! as Map<String, dynamic>?;
