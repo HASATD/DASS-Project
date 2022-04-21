@@ -22,8 +22,10 @@ class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
 
   final CollectionReference _requestReference =
       FirebaseFirestore.instance.collection('Request');
-  late final Stream<QuerySnapshot> _requestStream =
-      _requestReference.snapshots();
+
+  late final Stream<QuerySnapshot> _requestStream = _requestReference
+      .where('UserID', isEqualTo: widget._user.uid)
+      .snapshots();
 
   @override
   void initState() {
@@ -54,7 +56,8 @@ class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
         title: Text(
-          'Current Requests',ding] argument must not be null. Colors.white),
+          'Current Requests',
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -64,16 +67,11 @@ class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
             if (snapshot.hasError) {
               return const Text('Something went wrong');
             }
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }
-
             return ListView(
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-              
+
                 return Padding(
                   padding: const EdgeInsets.all(1.0),
                   child: GestureDetector(
@@ -104,31 +102,6 @@ class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              TextButton(
-                                child: const Text(
-                                  'REFUSE',
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                onPressed: () {/* ... */},
-                              ),
-                              const SizedBox(width: 16),
-                              Padding(
-                                padding: EdgeInsets.all(10),
-                                child: ElevatedButton(
-                                  child: const Text(
-                                    'ACCEPT',
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                  onPressed: () async {
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                            ],
                           ),
                         ],
                       ),
@@ -284,4 +257,3 @@ class _RequestInfoState extends State<RequestInfo> {
             )));
   }
 }
-

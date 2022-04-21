@@ -14,6 +14,7 @@ import 'package:petlove/mainkk.dart';
 import 'package:petlove/screens/register_NGO.dart';
 import 'package:petlove/screens/join_NGO.dart';
 import 'package:petlove/screens/ngo_request_display.dart';
+import 'package:petlove/screens/help_request_display_user.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required UserModel user})
@@ -106,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => NGORequestsDisplay(
+                      builder: (context) => HelpRequestDisplayUser(
                             user: _user,
                           )),
                 );

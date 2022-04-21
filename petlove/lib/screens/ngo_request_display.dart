@@ -75,41 +75,6 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
 
-                // return Padding(
-                //   padding: const EdgeInsets.all(1.0),
-                //   child: GestureDetector(
-                //     onTap: () {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //             builder: (context) => RequestDetail(
-                //                   document: data,
-                //                 )),
-                //       );
-                //     }, // Image tapped
-                //     child: Container(
-                //       height: 720,
-                //       width: double.infinity,
-                //       // child: Image.network(
-                //       //   data['ImageURL'],
-                //       //   fit: BoxFit.contain,
-                //       // ),
-                //       child: CachedNetworkImage(
-                //         imageUrl: data['ImageURL'],
-                //         placeholder: (context, url) => Center(
-                //           child: SizedBox(
-                //             height: 100,
-                //             width: 100,
-                //             child: CircularProgressIndicator(),
-                //           ),
-                //         ),
-                //         errorWidget: (context, url, error) => Icon(Icons.error),
-                //         fit: BoxFit.contain,
-                //       ),
-                //     ),
-                //   ),
-                // );
-
                 return Padding(
                   padding: const EdgeInsets.all(1.0),
                   child: GestureDetector(
@@ -159,26 +124,7 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                                     'ACCEPT',
                                     style: TextStyle(fontSize: 15),
                                   ),
-                                  onPressed: () async {
-                                    // if (_user.ngo_uid != null) {
-                                    //   Fluttertoast.showToast(
-                                    //       msg:
-                                    //           "You can join only if you are not in any NGOs...");
-                                    // } else {
-                                    //   await FirebaseFirestore.instance
-                                    //       .collection('users')
-                                    //       .doc(_user.uid)
-                                    //       .update({
-                                    //         'ngo_uid': data!['uid'],
-                                    //       })
-                                    //       .then((value) => print("success"))
-                                    //       .catchError((error) =>
-                                    //           print('Failed: $error'));
-
-                                    //   Fluttertoast.showToast(
-                                    //       msg: "Request sent Successfully!");
-                                    // }
-                                  },
+                                  onPressed: () async {},
                                 ),
                               ),
                               const SizedBox(width: 16),
