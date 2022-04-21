@@ -70,73 +70,79 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
               return const CircularProgressIndicator();
             }
 
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
+            if (snapshot.hasData) {
+              return ListView(
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
 
-                return Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RequestDetail(
-                                  document: data,
-                                )),
-                      );
-                    }, // Image tapped
-                    child: Card(
-                      child: Column(
-                        children: <Widget>[
-                          ListTile(
-                            leading: CircleAvatar(
-                              radius: 30,
-                              backgroundImage: CachedNetworkImageProvider(
-                                data['ImageURL'],
-                              ),
-                            ),
-                            title: Text(
-                              data['Animal'],
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 4, 50, 88),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              TextButton(
-                                child: const Text(
-                                  'REFUSE',
-                                  style: TextStyle(fontSize: 15),
+                  return Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RequestDetail(
+                                    document: data,
+                                  )),
+                        );
+                      }, // Image tapped
+                      child: Card(
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              leading: CircleAvatar(
+                                radius: 30,
+                                backgroundImage: CachedNetworkImageProvider(
+                                  data['ImageURL'],
                                 ),
-                                onPressed: () {/* ... */},
                               ),
-                              const SizedBox(width: 16),
-                              Padding(
-                                padding: EdgeInsets.all(10),
-                                child: ElevatedButton(
+                              title: Text(
+                                data['Animal'],
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 4, 50, 88),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                TextButton(
                                   child: const Text(
-                                    'ACCEPT',
+                                    'REFUSE',
                                     style: TextStyle(fontSize: 15),
                                   ),
-                                  onPressed: () async {},
+                                  onPressed: () {/* ... */},
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                            ],
-                          ),
-                        ],
+                                const SizedBox(width: 16),
+                                Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: ElevatedButton(
+                                    child: const Text(
+                                      'ACCEPT',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                    onPressed: () async {},
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
-            );
+                  );
+                }).toList(),
+              );
+            } else {
+              return const Center(
+                child: Text("No Requests to display"),
+              );
+            }
           }),
     ));
   }
