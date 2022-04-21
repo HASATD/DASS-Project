@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class NGOModel {
   String? uid;
   String? email;
@@ -8,6 +10,7 @@ class NGOModel {
   int? verified;
   String? certificate;
   String? dpURL;
+  GeoPoint? location;
 
   NGOModel({
     this.uid,
@@ -17,6 +20,7 @@ class NGOModel {
     this.verified,
     this.certificate,
     this.dpURL,
+    this.location,
   });
 
   // fetch data from server
@@ -29,6 +33,7 @@ class NGOModel {
       verified: map['verified'],
       certificate: map['certificate'],
       dpURL: map['dpURL'],
+      location: map['location'],
     );
   }
 
@@ -42,6 +47,7 @@ class NGOModel {
       'verified': verified,
       'certificate': certificate,
       'dpURL': dpURL,
+      'location': location,
     };
   }
 }
