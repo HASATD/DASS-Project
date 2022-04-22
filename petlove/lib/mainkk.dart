@@ -142,21 +142,12 @@ class MyCustomFormState extends State<MyCustomForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(
-          color: Color.fromARGB(255, 4, 50, 88),
-          padding: EdgeInsets.all(3),
-          child: Flexible(
-            flex: 1,
-            child: IconButton(
-              tooltip: 'Go back',
-              icon: const Icon(Icons.arrow_back_ios),
-              alignment: Alignment.center,
-              iconSize: 20,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            // passing this to our root
+            Navigator.of(context).pop();
+          },
         ), //Container,
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
@@ -464,21 +455,12 @@ class _setCurrentLocationState extends State<setCurrentLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(
-          color: Color.fromARGB(255, 4, 50, 88),
-          padding: EdgeInsets.all(3),
-          child: Flexible(
-            flex: 1,
-            child: IconButton(
-              tooltip: 'Go back',
-              icon: const Icon(Icons.arrow_back_ios),
-              alignment: Alignment.center,
-              iconSize: 20,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            // passing this to our root
+            Navigator.of(context).pop();
+          },
         ), //Container,
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),

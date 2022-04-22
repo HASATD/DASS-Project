@@ -236,12 +236,13 @@ class _JoinFormState extends State<JoinForm> {
         .doc()
         .set(datajoin.toMap());
     Fluttertoast.showToast(msg: "Request Sent Successfully :) ");
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (context) => HomePage(
-                  user: _user,
-                )),
-        (route) => false);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => HomePage(
+                user: _user,
+              )),
+    );
+    //(route) => false);
   }
 }
