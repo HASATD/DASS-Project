@@ -141,7 +141,7 @@ class _NGOsDisplayState extends State<NGOsDisplay> {
                                     if (_user.ngo_uid != null) {
                                       Fluttertoast.showToast(
                                           msg:
-                                              "You are already a member of ${data['Organization']}...");
+                                              "You are already a member of some NGO");
                                     } else {
                                       print(data['uid']);
                                       Navigator.push(

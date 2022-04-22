@@ -146,7 +146,7 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                   // print(distance);
 
                   // print(data!['HelperUID']);
-                  if (distance < 30000 && data['HelperUID'] == null) {
+                  if (distance < 30000 && (data['HelperUID'] == null || data!['HelperUID'] == '')) {
                     return Padding(
                       padding: const EdgeInsets.all(1.0),
                       child: GestureDetector(
