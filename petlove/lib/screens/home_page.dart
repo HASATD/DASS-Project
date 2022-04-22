@@ -15,7 +15,11 @@ import 'package:petlove/screens/register_NGO.dart';
 import 'package:petlove/screens/join_NGO.dart';
 import 'package:petlove/screens/ngo_request_display.dart';
 import 'package:petlove/screens/help_request_display_user.dart';
+<<<<<<< HEAD
 import 'package:petlove/screens/update_user_profile.dart';
+=======
+import 'package:petlove/screens/helper_dashboard.dart';
+>>>>>>> d92194a4bd5395dff1e56fa1213435eb86c26993
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required UserModel user})
@@ -114,6 +118,7 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
+<<<<<<< HEAD
             ListTile(
               leading: Icon(Icons.update),
               title: Text("Update Profile", style: TextStyle(fontSize: 18)),
@@ -127,6 +132,24 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
+=======
+            (_user.ngo_uid != null)
+                ? ListTile(
+                    leading: Icon(Icons.request_quote),
+                    title: Text("Requests Assigned",
+                        style: TextStyle(fontSize: 18)),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HelperAssignedRequests(
+                                  user: _user,
+                                )),
+                      );
+                    },
+                  )
+                : Container(),
+>>>>>>> d92194a4bd5395dff1e56fa1213435eb86c26993
           ]),
         ),
         body: SafeArea(
