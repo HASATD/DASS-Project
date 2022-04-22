@@ -12,9 +12,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:petlove/models/NGO_model.dart';
 
-
 class NGORequestsDisplay extends StatefulWidget {
-  const NGORequestsDisplay({Key? key, required String? uid, required NGOModel NGO})
+  const NGORequestsDisplay(
+      {Key? key, required String? uid, required NGOModel NGO})
       : _uid = uid,
         _NGO = NGO,
         super(key: key);
@@ -38,13 +38,13 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
     _NGO = widget._NGO;
     super.initState();
   }
+
   final CollectionReference _requestReference =
       FirebaseFirestore.instance.collection('Request');
   late final Stream<QuerySnapshot> _requestStream =
       _requestReference.snapshots();
 
-
-  void getGeopoint() async{
+  void getGeopoint() async {
     var collection = FirebaseFirestore.instance.collection('NGOs');
     var docSnapshot = await collection.doc(_uid).get();
     Map<String, dynamic>? data = docSnapshot.data();
@@ -52,10 +52,10 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
     setState(() {
       NGOGeopointInitFlag = true;
     });
-    // print(NGOGeopoint); // <-- The value you want to retrieve. 
-      // Call setState if needed.
+    // print(NGOGeopoint); // <-- The value you want to retrieve.
+    // Call setState if needed.
   }
-  
+
   // getGeopoint();
 
   @override
@@ -64,31 +64,33 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
       getGeopoint();
       return MaterialApp(
         home: Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          color: Color.fromARGB(255, 4, 50, 88),
-          padding: EdgeInsets.all(3),
-          child: Flexible(
-            flex: 1,
-            child: IconButton(
-              tooltip: 'Go back',
-              icon: const Icon(Icons.arrow_back_ios),
-              alignment: Alignment.center,
-              iconSize: 20,
-              onPressed: () {
-                Navigator.pop(context);
-              },
+          appBar: AppBar(
+            leading: Container(
+              color: Color.fromARGB(255, 4, 50, 88),
+              padding: EdgeInsets.all(3),
+              child: Flexible(
+                flex: 1,
+                child: IconButton(
+                  tooltip: 'Go back',
+                  icon: const Icon(Icons.arrow_back_ios),
+                  alignment: Alignment.center,
+                  iconSize: 20,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ), //Container,
+            elevation: 0,
+            backgroundColor: Color.fromARGB(255, 4, 50, 88),
+            title: Text(
+              'Current Requests',
+              style: TextStyle(color: Colors.white),
             ),
           ),
-        ), //Container,
-        elevation: 0,
-        backgroundColor: Color.fromARGB(255, 4, 50, 88),
-        title: Text(
-          'Current Requests',
-          style: TextStyle(color: Colors.white),
+          body: Center(child: CircularProgressIndicator()),
         ),
-      ),
-      body: Center(child: CircularProgressIndicator()),),);
+      );
     }
     return MaterialApp(
         home: Scaffold(
@@ -137,19 +139,21 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                   GeoPoint requestGeopoint = map['geopoint'];
                   // getGeopoint();
                   var distance = Geolocator.distanceBetween(
-                      NGOGeopoint.latitude, NGOGeopoint.longitude,
-                      requestGeopoint.latitude, requestGeopoint.longitude);
+                      NGOGeopoint.latitude,
+                      NGOGeopoint.longitude,
+                      requestGeopoint.latitude,
+                      requestGeopoint.longitude);
                   // print(distance);
-                  
+
                   // print(data!['HelperUID']);
-                  if(distance < 30000 && data['HelperUID'] == null){
+                  if (distance < 30000 && data['HelperUID'] == null) {
                     return Padding(
                       padding: const EdgeInsets.all(1.0),
                       child: GestureDetector(
                         // onTap: () {
                         //   ;
                         // },
-                        
+
                         child: Card(
                           child: Column(
                             children: <Widget>[
@@ -171,8 +175,7 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
-                                children:
-                                 <Widget>[
+                                children: <Widget>[
                                   TextButton(
                                     child: const Text(
                                       'REFUSE',
@@ -194,7 +197,8 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => NGOteammembers(
+                                              builder: (context) =>
+                                                  NGOteammembers(
                                                     NGO: _NGO,
                                                     RequestID: data['ImageURL'],
                                                   )),
@@ -210,8 +214,7 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                         ),
                       ),
                     );
-                  }
-                  else{
+                  } else {
                     return Container();
                   }
                 }).toList(),
@@ -370,7 +373,8 @@ class _RequestInfoState extends State<RequestInfo> {
 }
 
 class NGOteammembers extends StatefulWidget {
-  const NGOteammembers({Key? key, required NGOModel NGO, required String RequestID})
+  const NGOteammembers(
+      {Key? key, required NGOModel NGO, required String RequestID})
       : _NGO = NGO,
         _RequestID = RequestID,
         super(key: key);
@@ -487,18 +491,24 @@ class _NGOteammembersState extends State<NGOteammembers> {
                                   //   .collection('Requests').where('ImageURL', isEqualTo: widget._RequestID)
                                   //   .get().
                                   //   .update({'HelperUID': data['uid']});
-                                  var collection = FirebaseFirestore.instance.collection('Request').where('ImageURL', isEqualTo: widget._RequestID);
+                                  var collection = FirebaseFirestore.instance
+                                      .collection('Request')
+                                      .where('ImageURL',
+                                          isEqualTo: widget._RequestID);
                                   var querySnapshots = await collection.get();
                                   for (var doc in querySnapshots.docs) {
                                     await doc.reference.update({
                                       'HelperUID': data['uid'],
+                                      'IsCompleted': true,
                                     });
                                   }
                                   print("Request id :" + widget._RequestID);
-                                  Navigator.pushReplacement(context, MaterialPageRoute(
-                                              builder: (context) => NGOHomePage(
-                                                    uid: _NGO.uid,
-                                                  ))); 
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => NGOHomePage(
+                                                uid: _NGO.uid,
+                                              )));
                                 },
                               ),
                               const SizedBox(width: 16),

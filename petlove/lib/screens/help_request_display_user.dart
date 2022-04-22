@@ -249,22 +249,25 @@ class RequestDetail extends StatelessWidget {
                           color: Colors.black,
                         ),
                       ),
-                      MaterialButton(
-                        color: Color.fromARGB(255, 4, 50, 88),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    HelperView(helperUID: data!['HelperUID'])),
-                          );
-                        },
-                        child: Text(
-                          'View Helper',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                      (data!['HelperUID'] == null)
+                          ? Container()
+                          : MaterialButton(
+                              color: Color.fromARGB(255, 4, 50, 88),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HelperView(
+                                          helperUID: data!['HelperUID'])),
+                                );
+                              },
+                              child: Text(
+                                'View Helper',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                     ],
                   ),
                 ),
