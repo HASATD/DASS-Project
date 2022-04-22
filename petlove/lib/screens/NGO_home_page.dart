@@ -56,18 +56,18 @@ class _NGOHomePageState extends State<NGOHomePage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Color.fromARGB(255, 4, 50, 88),
-        //   leading: Container(
-        //   color: Color.fromARGB(255, 57, 152, 216),
-        //   padding: EdgeInsets.all(3),
-        //   /** PetCare Logo **/
-        //     child: Flexible(
-        //     flex: 1,
-        //     child: Image.asset(
-        //       'assets/petcare_image.PNG',
-        //       height: 50,
-        //     ),
-        //   ),
-        // ), //Container
+          //   leading: Container(
+          //   color: Color.fromARGB(255, 57, 152, 216),
+          //   padding: EdgeInsets.all(3),
+          //   /** PetCare Logo **/
+          //     child: Flexible(
+          //     flex: 1,
+          //     child: Image.asset(
+          //       'assets/petcare_image.PNG',
+          //       height: 50,
+          //     ),
+          //   ),
+          // ), //Container
           title: Text('Welcome to petcare app'),
           centerTitle: true,
         ),
@@ -98,12 +98,13 @@ class _NGOHomePageState extends State<NGOHomePage> {
                 fireuser.photoURL = data['photoURL'];
                 fireuser.ngo_uid = data['ngo_uid'];
 
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                         builder: (context) => HomePage(
                               user: fireuser,
-                            )));
+                            )),
+                    (route) => false);
               },
             ),
             ListTile(
@@ -150,18 +151,16 @@ class _NGOHomePageState extends State<NGOHomePage> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.request_quote),
-              title: Text("Help Requests", style: TextStyle(fontSize: 18)),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NGORequestsDisplay(
-                            uid: _uid,)
-                  )
-                );
-              }
-            ),
+                leading: Icon(Icons.request_quote),
+                title: Text("Help Requests", style: TextStyle(fontSize: 18)),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NGORequestsDisplay(
+                                uid: _uid,
+                              )));
+                }),
             ListTile(
               leading: Icon(Icons.pending_outlined),
               title: Text("Applications", style: TextStyle(fontSize: 18)),

@@ -7,6 +7,7 @@ import 'package:petlove/models/User_model.dart';
 import 'package:petlove/res/custom_colors.dart';
 import 'package:petlove/screens/home_page.dart';
 import 'package:petlove/utils/authentication.dart';
+import 'package:petlove/widgets/button_widget.dart';
 import 'package:petlove/widgets/google_sign_in_button.dart';
 import 'package:petlove/screens/sign_in_screen.dart';
 import 'package:petlove/models/User_model.dart';
@@ -69,13 +70,7 @@ class _AccountPageState extends State<AccountPage> {
               alignment: Alignment.center,
               iconSize: 20,
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomePage(
-                            user: _user,
-                          )),
-                );
+                Navigator.pop(context);
               },
             ),
           ),
@@ -110,38 +105,30 @@ class _AccountPageState extends State<AccountPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    CircleAvatar(
-                      backgroundColor: Colors.white70,
-                      minRadius: 60.0,
-                      child: CircleAvatar(
-                        radius: 50.0,
-                        child: Column(children: [
-                          _user.photoURL != null
-                              ? ClipOval(
-                                  child: Material(
-                                    color: Colors.blueGrey.withOpacity(0.3),
-                                    child: Image.network(
-                                      _user.photoURL!,
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                  ),
-                                )
-                              : ClipOval(
-                                  child: Material(
-                                    color: Colors.blueGrey.withOpacity(0.3),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 60,
-                                        color: Colors.blueGrey,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                        ]),
-                      ),
-                    ),
+                    _user.photoURL != null
+                        ? CircleAvatar(
+                            backgroundColor: Colors.white70,
+                            minRadius: 60.0,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              backgroundImage: CachedNetworkImageProvider(
+                                  _user.photoURL as String),
+                              radius: 50,
+                            ),
+                          )
+                        : CircleAvatar(
+                            backgroundColor: Colors.white70,
+                            minRadius: 60.0,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              child: Icon(
+                                Icons.person,
+                                size: 50,
+                                color: Colors.blueGrey,
+                              ),
+                              radius: 50,
+                            ),
+                          ),
                   ],
                 ),
                 SizedBox(
@@ -150,6 +137,7 @@ class _AccountPageState extends State<AccountPage> {
               ],
             ),
           ),
+          // Row(
           Container(
             child: Column(
               children: <Widget>[

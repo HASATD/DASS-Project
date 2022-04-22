@@ -15,6 +15,7 @@ import 'package:petlove/screens/register_NGO.dart';
 import 'package:petlove/screens/join_NGO.dart';
 import 'package:petlove/screens/ngo_request_display.dart';
 import 'package:petlove/screens/help_request_display_user.dart';
+import 'package:petlove/screens/update_user_profile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required UserModel user})
@@ -108,6 +109,19 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => HelpRequestDisplayUser(
+                            user: _user,
+                          )),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.update),
+              title: Text("Update Profile", style: TextStyle(fontSize: 18)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => updateProfile(
                             user: _user,
                           )),
                 );
