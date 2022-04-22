@@ -103,7 +103,7 @@ class _NGOsDisplayState extends State<NGOsDisplay> {
                               ),
                             ),
                             title: Text(
-                              data!['Organization'],
+                              data['Organization'],
                               style: TextStyle(
                                 color: Color.fromARGB(255, 4, 50, 88),
                                 fontSize: 18,
@@ -141,15 +141,15 @@ class _NGOsDisplayState extends State<NGOsDisplay> {
                                     if (_user.ngo_uid != null) {
                                       Fluttertoast.showToast(
                                           msg:
-                                              "You are already a member of ${data!['Organization']}...");
+                                              "You are already a member of ${data['Organization']}...");
                                     } else {
-                                      print(data!['uid']);
+                                      print(data['uid']);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => JoinForm(
                                                   user: _user,
-                                                  ngo_uid: data!['uid'],
+                                                  ngo_uid: data['uid'],
                                                 )),
                                       );
 

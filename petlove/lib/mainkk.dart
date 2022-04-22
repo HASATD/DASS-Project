@@ -285,6 +285,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                             'ImageURL': imageURL,
                             'Animal': animalController.text,
                             'IsCompleted': false,
+                            'HelperUID': '',
                           }).then((value) => Navigator.push(
                                 context,
                                 MaterialPageRoute(

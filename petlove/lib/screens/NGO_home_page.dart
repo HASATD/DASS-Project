@@ -152,12 +152,29 @@ class _NGOHomePageState extends State<NGOHomePage> {
             ListTile(
               leading: Icon(Icons.request_quote),
               title: Text("Help Requests", style: TextStyle(fontSize: 18)),
-              onTap: () {
+              onTap: () async {
+                DocumentSnapshot variable = await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(_uid)
+                    .get();
+                print(_uid);
+                Map<String, dynamic> NGOdata =
+                    variable.data()! as Map<String, dynamic>;
+
+                NGOModel NGO = NGOModel();
+                NGO.uid = _uid;
+                NGO.Organization = NGOdata['Organization'];
+                NGO.certificate = NGOdata['certificate'];
+                NGO.dpURL = NGOdata['dpURL'];
+                NGO.email = NGOdata['email'];
+                NGO.phoneNumber = NGOdata['phoneNumber'];
+                NGO.verified = NGOdata['verified'];
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => NGORequestsDisplay(
-                            uid: _uid,)
+                            uid: _uid,
+                            NGO: NGO)
                   )
                 );
               }

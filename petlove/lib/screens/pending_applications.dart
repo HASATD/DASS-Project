@@ -131,7 +131,7 @@ class _pendingapplsState extends State<pendingappls> {
                                 ),
                                 onPressed: () async {
                                   user = await Applicantdetails(
-                                      data!['uid'], data);
+                                      data['uid'], data);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -154,7 +154,7 @@ class _pendingapplsState extends State<pendingappls> {
                                     DocumentSnapshot variable =
                                         await FirebaseFirestore.instance
                                             .collection('users')
-                                            .doc(data!['uid'])
+                                            .doc(data['uid'])
                                             .get();
                                     Map<String, dynamic> userdata = variable
                                         .data()! as Map<String, dynamic>;
@@ -162,7 +162,7 @@ class _pendingapplsState extends State<pendingappls> {
                                     if (userdata['ngo_uid'] == null) {
                                       await FirebaseFirestore.instance
                                           .collection('users')
-                                          .doc(data!['uid'])
+                                          .doc(data['uid'])
                                           .update({'ngo_uid': _NGO.uid});
                                       await FirebaseFirestore.instance
                                           .collection('JoinRequests')

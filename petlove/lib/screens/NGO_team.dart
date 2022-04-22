@@ -104,7 +104,7 @@ class _NGOteamState extends State<NGOteam> {
                               ),
                             ),
                             title: Text(
-                              data!['displayName'],
+                              data['displayName'],
                               style: TextStyle(
                                 color: Color.fromARGB(255, 4, 50, 88),
                                 fontSize: 18,
