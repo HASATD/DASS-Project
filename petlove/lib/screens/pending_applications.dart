@@ -1,40 +1,43 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:petlove/models/User_model.dart';
-import 'package:petlove/utils/authentication.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:flutter/material.dart';
+import 'package:petlove/models/NGO_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:petlove/screens/join_NGO_form.dart';
+import 'package:petlove/models/User_model.dart';
 
-class NGOsDisplay extends StatefulWidget {
-  const NGOsDisplay({Key? key, required UserModel user})
-      : _user = user,
+class pendingappls extends StatefulWidget {
+  const pendingappls({Key? key, required NGOModel NGO})
+      : _NGO = NGO,
         super(key: key);
 
-  final UserModel _user;
-
+  final NGOModel _NGO;
   @override
-  State<NGOsDisplay> createState() => _NGOsDisplayState();
+  State<pendingappls> createState() => _pendingapplsState();
 }
 
-class _NGOsDisplayState extends State<NGOsDisplay> {
+class _pendingapplsState extends State<pendingappls> {
+  @override
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   var joinstat = 0;
-  late UserModel _user;
-
-  final CollectionReference _requestReference =
-      FirebaseFirestore.instance.collection('NGOs');
-  late final Stream<QuerySnapshot> _requestStream =
-      _requestReference.snapshots();
+  late NGOModel _NGO;
+  late UserModel user;
 
   @override
   void initState() {
-    _user = widget._user;
+    _NGO = widget._NGO;
 
     super.initState();
   }
+
+  @override
+  final CollectionReference _joinngoReference =
+      FirebaseFirestore.instance.collection('JoinRequests');
+
+  late final Stream<QuerySnapshot> _joinngostream =
+      _joinngoReference.snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +63,12 @@ class _NGOsDisplayState extends State<NGOsDisplay> {
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
         title: Text(
-          'Available NGOs',
+          'pending applications',
           style: TextStyle(color: Colors.white),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: _requestStream,
+          stream: _joinngostream,
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -77,33 +80,40 @@ class _NGOsDisplayState extends State<NGOsDisplay> {
             }
 
             return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              children: snapshot.data!.docs
+                  .where((element) =>
+                      element['ngo_uid'] == _NGO.uid &&
+                      element['status'] == "ongoing")
+                  .map((DocumentSnapshot document) {
                 Map<String, dynamic>? data =
                     document.data()! as Map<String, dynamic>?;
 
+                var id = document.id;
                 return Padding(
                   padding: const EdgeInsets.all(1.0),
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NGODetail(
-                                  document: data,
-                                )),
-                      );
+                    onTap: () async {
+                      user = await Applicantdetails(data!['uid'], data);
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ApplicationDetail(
+                                    document: data,
+                                    user: user,
+                                  )),
+                          (route) => false);
                     }, // Image tapped
                     child: Card(
                       child: Column(
                         children: <Widget>[
                           ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: CachedNetworkImageProvider(
-                                data!['dpURL'],
-                              ),
-                            ),
+                            // leading: CircleAvatar(
+                            //   backgroundImage: CachedNetworkImageProvider(
+                            //     data!['dpURL'],
+                            //   ),
+                            // ),
                             title: Text(
-                              data!['Organization'],
+                              data!['contact'],
                               style: TextStyle(
                                 color: Color.fromARGB(255, 4, 50, 88),
                                 fontSize: 18,
@@ -119,12 +129,15 @@ class _NGOsDisplayState extends State<NGOsDisplay> {
                                   'View',
                                   style: TextStyle(fontSize: 15),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
+                                  user = await Applicantdetails(
+                                      data!['uid'], data);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => NGODetail(
+                                        builder: (context) => ApplicationDetail(
                                               document: data,
+                                              user: user,
                                             )),
                                   );
                                 },
@@ -134,41 +147,54 @@ class _NGOsDisplayState extends State<NGOsDisplay> {
                                 padding: EdgeInsets.all(10),
                                 child: ElevatedButton(
                                   child: const Text(
-                                    'Join',
+                                    'Accept',
                                     style: TextStyle(fontSize: 15),
                                   ),
                                   onPressed: () async {
-                                    if (_user.ngo_uid != null) {
+                                    DocumentSnapshot variable =
+                                        await FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(data!['uid'])
+                                            .get();
+                                    Map<String, dynamic> userdata = variable
+                                        .data()! as Map<String, dynamic>;
+
+                                    if (userdata['ngo_uid'] == null) {
+                                      await FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(data!['uid'])
+                                          .update({'ngo_uid': _NGO.uid});
+                                      await FirebaseFirestore.instance
+                                          .collection('JoinRequests')
+                                          .doc(id)
+                                          .update({'status': 'accepted'});
                                       Fluttertoast.showToast(
                                           msg:
-                                              "You are already a member of ${data!['Organization']}...");
+                                              "Congrats! New volunteer added...");
                                     } else {
-                                      print(data!['uid']);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => JoinForm(
-                                                  user: _user,
-                                                  ngo_uid: data!['uid'],
-                                                )),
-                                      );
-
-                                      // await FirebaseFirestore.instance
-                                      //     .collection('users')
-                                      //     .doc(_user.uid)
-                                      //     .update({
-                                      //       'ngo_uid': data!['uid'],
-                                      //     })
-                                      //     .then((value) => print("success"))
-                                      //     .catchError((error) =>
-                                      //         print('Failed: $error'));
-                                      // Fluttertoast.showToast(
-                                      //     msg: "Request sent Successfully!");
+                                      Fluttertoast.showToast(
+                                          msg:
+                                              "User is already registered in an NGO :(");
                                     }
                                   },
                                 ),
                               ),
                               const SizedBox(width: 16),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: ElevatedButton(
+                                  child: const Text(
+                                    'Reject',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  onPressed: () async {
+                                    await FirebaseFirestore.instance
+                                        .collection('JoinRequests')
+                                        .doc(id)
+                                        .update({'status': 'rejected'});
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -181,14 +207,43 @@ class _NGOsDisplayState extends State<NGOsDisplay> {
           }),
     ));
   }
+
+  Applicantdetails(String? uid, Map<String, dynamic>? document) async {
+    // calling our firestore
+    // calling our user model
+    // sedning these values
+
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+    UserModel dataUser = UserModel();
+
+    // writing all the values
+
+    DocumentSnapshot variable =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    Map<String, dynamic> data = variable.data()! as Map<String, dynamic>;
+
+    dataUser.displayName = data['displayName'];
+    dataUser.uid = data['uid'];
+    dataUser.email = data['email'];
+    dataUser.photoURL = data['photoURL'];
+    dataUser.ngo_uid = data['ngo_uid'];
+
+    return dataUser;
+  }
 }
 
-class NGODetail extends StatelessWidget {
-  const NGODetail({required Map<String, dynamic>? document, Key? key})
+class ApplicationDetail extends StatelessWidget {
+  const ApplicationDetail(
+      {required Map<String, dynamic>? document,
+      required UserModel user,
+      Key? key})
       : data = document,
+        user = user,
         super(key: key);
 
   final Map<String, dynamic>? data;
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +269,7 @@ class NGODetail extends StatelessWidget {
               elevation: 0,
               backgroundColor: Color.fromARGB(255, 4, 50, 88),
               title: Text(
-                'NGO Details',
+                'Application',
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -240,14 +295,14 @@ class NGODetail extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          if (data!['dpURL'] != null) ...{
+                          if (user.photoURL != null) ...{
                             CircleAvatar(
                               backgroundColor: Colors.white70,
                               minRadius: 60.0,
                               child: CircleAvatar(
                                 backgroundColor: Colors.grey,
-                                backgroundImage:
-                                    CachedNetworkImageProvider(data!['dpURL']),
+                                backgroundImage: CachedNetworkImageProvider(
+                                    user.photoURL as String),
                                 radius: 50,
                               ),
                             ),
@@ -258,7 +313,7 @@ class NGODetail extends StatelessWidget {
                                 child: CircleAvatar(
                                   backgroundColor: Colors.grey,
                                   child: Icon(
-                                    Icons.group,
+                                    Icons.person,
                                     size: 50,
                                     color: Colors.blueGrey,
                                   ),
@@ -286,7 +341,7 @@ class NGODetail extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(
-                          data!['Organization'],
+                          user.displayName as String,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -304,38 +359,46 @@ class NGODetail extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(
-                          data!['email'],
+                          user.email as String,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                            Color.fromARGB(255, 4, 50, 88),
-                          ),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                      Divider(),
+                      ListTile(
+                        title: Text(
+                          'Contact',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 4, 50, 88),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () {},
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                          child: Text(
-                            'Join',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 2,
-                            ),
+                        subtitle: Text(
+                          data!['contact'],
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        title: Text(
+                          'Description',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 4, 50, 88),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text(
+                          data!['description'],
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
                           ),
                         ),
                       ),

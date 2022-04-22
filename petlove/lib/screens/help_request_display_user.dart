@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:petlove/models/User_model.dart';
@@ -5,6 +7,105 @@ import 'package:petlove/utils/authentication.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+class UserPastHelpRequests extends StatefulWidget {
+  const UserPastHelpRequests({Key? key}) : super(key: key);
+
+  @override
+  State<UserPastHelpRequests> createState() => _UserPastHelpRequestsState();
+}
+
+class _UserPastHelpRequestsState extends State<UserPastHelpRequests> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class UserHelpRequests extends StatefulWidget {
+  const UserHelpRequests(
+      {Key? key, required UserModel user, required bool isCompleted})
+      : _user = user,
+        _isCompleted = isCompleted,
+        super(key: key);
+
+  final UserModel _user;
+  final bool _isCompleted;
+
+  @override
+  State<UserHelpRequests> createState() => _UserHelpRequestsState();
+}
+
+class _UserHelpRequestsState extends State<UserHelpRequests> {
+  final CollectionReference _requestReference =
+      FirebaseFirestore.instance.collection('Request');
+
+  late final Stream<QuerySnapshot> _requestStream = _requestReference
+      .where('UserID', isEqualTo: widget._user.uid)
+      .where('IsCompleted', isEqualTo: widget._isCompleted)
+      .snapshots();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _requestStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
+          }
+
+          if (snapshot.hasData) {
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+
+                return Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RequestDetail(
+                                  document: data,
+                                )),
+                      );
+                    }, // Image tapped
+                    child: Card(
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            leading: CircleAvatar(
+                              radius: 75,
+                              backgroundImage: CachedNetworkImageProvider(
+                                data['ImageURL'],
+                              ),
+                            ),
+                            title: Text(
+                              data['Animal'],
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 4, 50, 88),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            );
+          } else {
+            return const Center(
+              child: Text("No Requests to display"),
+            );
+          }
+        });
+  }
+}
 
 class HelpRequestDisplayUser extends StatefulWidget {
   const HelpRequestDisplayUser({Key? key, required UserModel user})
@@ -27,6 +128,15 @@ class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
       .where('UserID', isEqualTo: widget._user.uid)
       .snapshots();
 
+  void UpdateFields() async {
+    var querySnapshots = await _requestReference.get();
+    for (var doc in querySnapshots.docs) {
+      await doc.reference.update({
+        'IsCompleted': false,
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -34,91 +144,53 @@ class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return DefaultTabController(
+      length: 2,
+      child: MaterialApp(
         home: Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          color: Color.fromARGB(255, 4, 50, 88),
-          padding: EdgeInsets.all(3),
-          child: Flexible(
-            flex: 1,
-            child: IconButton(
-              tooltip: 'Go back',
-              icon: const Icon(Icons.arrow_back_ios),
-              alignment: Alignment.center,
-              iconSize: 20,
-              onPressed: () {
-                Navigator.pop(context);
-              },
+          appBar: AppBar(
+            bottom: TabBar(
+              tabs: [
+                Tab(
+                  text: "ACTIVE",
+                ),
+                Tab(
+                  text: "PAST",
+                ),
+              ],
+            ),
+            leading: Container(
+              color: Color.fromARGB(255, 4, 50, 88),
+              padding: EdgeInsets.all(3),
+              child: Flexible(
+                flex: 1,
+                child: IconButton(
+                  tooltip: 'Go back',
+                  icon: const Icon(Icons.arrow_back_ios),
+                  alignment: Alignment.center,
+                  iconSize: 20,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ), //Container,
+            elevation: 0,
+            backgroundColor: Color.fromARGB(255, 4, 50, 88),
+            title: Text(
+              'Current Requests',
+              style: TextStyle(color: Colors.white),
             ),
           ),
-        ), //Container,
-        elevation: 0,
-        backgroundColor: Color.fromARGB(255, 4, 50, 88),
-        title: Text(
-          'Current Requests',
-          style: TextStyle(color: Colors.white),
+          body: TabBarView(
+            children: [
+              UserHelpRequests(user: widget._user, isCompleted: false),
+              UserHelpRequests(user: widget._user, isCompleted: true),
+            ],
+          ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-          stream: _requestStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return const Text('Something went wrong');
-            }
-
-            if (snapshot.hasData) {
-              return ListView(
-                children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                  Map<String, dynamic> data =
-                      document.data()! as Map<String, dynamic>;
-
-                  return Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RequestDetail(
-                                    document: data,
-                                  )),
-                        );
-                      }, // Image tapped
-                      child: Card(
-                        child: Column(
-                          children: <Widget>[
-                            ListTile(
-                              leading: CircleAvatar(
-                                radius: 30,
-                                backgroundImage: CachedNetworkImageProvider(
-                                  data['ImageURL'],
-                                ),
-                              ),
-                              title: Text(
-                                data['Animal'],
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 4, 50, 88),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            } else {
-              return const Center(
-                child: Text("No Requests to display"),
-              );
-            }
-          }),
-    ));
+    );
   }
 }
 

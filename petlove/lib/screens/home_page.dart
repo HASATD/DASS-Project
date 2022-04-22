@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               leading: Icon(Icons.request_quote),
-              title: Text("Help Requests", style: TextStyle(fontSize: 20)),
+              title: Text("Help Requests", style: TextStyle(fontSize: 18)),
               onTap: () {
                 Navigator.push(
                   context,

@@ -107,7 +107,7 @@ class Authentication {
             fireuser.uid = data['uid'];
             fireuser.email = data['email'];
             fireuser.photoURL = data['photoURL'];
-            fireuser.photoURL = data['ngo_uid'];
+            fireuser.ngo_uid = data['ngo_uid'];
           }
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {

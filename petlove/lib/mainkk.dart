@@ -282,8 +282,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                             'Description': descriptionController.text,
                             'UserID': _user.uid,
                             'Location': geopoint.data,
-                            'ImageURL': this.imageURL,
+                            'ImageURL': imageURL,
                             'Animal': animalController.text,
+                            'IsCompleted': false,
                           }).then((value) => Navigator.push(
                                 context,
                                 MaterialPageRoute(
