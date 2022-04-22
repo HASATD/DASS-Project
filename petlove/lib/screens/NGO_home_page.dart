@@ -18,6 +18,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:petlove/screens/pending_applications.dart';
 import 'package:petlove/models/User_model.dart';
 import 'package:petlove/screens/home_page.dart';
+import 'package:petlove/screens/NGO_team.dart';
 
 class NGOHomePage extends StatefulWidget {
   const NGOHomePage({Key? key, required String? uid})
@@ -86,13 +87,16 @@ class _NGOHomePageState extends State<NGOHomePage> {
                     .collection('users')
                     .doc(_uid)
                     .get();
+
                 Map<String, dynamic> data =
                     variable.data()! as Map<String, dynamic>;
+
                 fireuser.displayName = data['displayName'];
                 fireuser.uid = data['uid'];
                 fireuser.email = data['email'];
                 fireuser.photoURL = data['photoURL'];
                 fireuser.ngo_uid = data['ngo_uid'];
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -104,14 +108,31 @@ class _NGOHomePageState extends State<NGOHomePage> {
             ListTile(
               leading: Icon(Icons.group),
               title: Text("Team Members", style: TextStyle(fontSize: 18)),
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => AccountPage(
-                //             user: _user,
-                //           )),
-                // );
+              onTap: () async {
+                NGOModel fireuser = NGOModel();
+                DocumentSnapshot variable = await FirebaseFirestore.instance
+                    .collection('NGOs')
+                    .doc(_uid)
+                    .get();
+
+                Map<String, dynamic> data =
+                    variable.data()! as Map<String, dynamic>;
+                fireuser.Organization = data['Organization'];
+                fireuser.uid = data['uid'];
+                fireuser.email = data['email'];
+                fireuser.dpURL = data['dpURL'];
+                fireuser.phoneNumber = data['phoneNumber'];
+                fireuser.location = data['location'];
+                fireuser.verified = data['verified'];
+                fireuser.certificate = data['certificate'];
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NGOteam(
+                            NGO: fireuser,
+                          )),
+                );
               },
             ),
             ListTile(
