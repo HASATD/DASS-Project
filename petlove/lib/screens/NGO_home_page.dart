@@ -13,6 +13,7 @@ import 'package:petlove/screens/account_page.dart';
 import 'package:petlove/mainkk.dart';
 import 'package:petlove/screens/register_NGO.dart';
 import 'package:petlove/screens/join_NGO.dart';
+import 'package:petlove/screens/ngo_request_display.dart';
 import 'package:petlove/models/NGO_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:petlove/screens/pending_applications.dart';
@@ -55,18 +56,18 @@ class _NGOHomePageState extends State<NGOHomePage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Color.fromARGB(255, 4, 50, 88),
-          /**leading: Container(
-          color: Color.fromARGB(255, 57, 152, 216),
-          padding: EdgeInsets.all(3),
-          /** PetCare Logo **/
-            child: Flexible(
-            flex: 1,
-            child: Image.asset(
-              'assets/petcare_image.PNG',
-              height: 50,
-            ),
-          ),
-        ),**/ //Container
+        //   leading: Container(
+        //   color: Color.fromARGB(255, 57, 152, 216),
+        //   padding: EdgeInsets.all(3),
+        //   /** PetCare Logo **/
+        //     child: Flexible(
+        //     flex: 1,
+        //     child: Image.asset(
+        //       'assets/petcare_image.PNG',
+        //       height: 50,
+        //     ),
+        //   ),
+        // ), //Container
           title: Text('Welcome to petcare app'),
           centerTitle: true,
         ),
@@ -147,6 +148,19 @@ class _NGOHomePageState extends State<NGOHomePage> {
                 //           )),
                 // );
               },
+            ),
+            ListTile(
+              leading: Icon(Icons.request_quote),
+              title: Text("Help Requests", style: TextStyle(fontSize: 18)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NGORequestsDisplay(
+                            uid: _uid,)
+                  )
+                );
+              }
             ),
             ListTile(
               leading: Icon(Icons.pending_outlined),
