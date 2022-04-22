@@ -20,10 +20,17 @@ class Authentication {
     UserModel? fireuser = UserModel();
 
     if (user != null) {
-      fireuser.displayName = user.displayName;
-      fireuser.email = user.email;
-      fireuser.uid = user.uid;
-      fireuser.photoURL = user.photoURL;
+      DocumentSnapshot variable = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      Map<String, dynamic> data = variable.data()! as Map<String, dynamic>;
+      fireuser.displayName = data['displayName'];
+      fireuser.uid = data['uid'];
+      fireuser.email = data['email'];
+      fireuser.photoURL = data['photoURL'];
+      fireuser.ngo_uid = data['ngo_uid'];
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomePage(
