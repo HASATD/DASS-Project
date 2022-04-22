@@ -25,6 +25,8 @@ class UserHelpRequests extends StatefulWidget {
 }
 
 class _UserHelpRequestsState extends State<UserHelpRequests> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   final CollectionReference _requestReference =
       FirebaseFirestore.instance.collection('Request');
 
@@ -107,23 +109,22 @@ class HelpRequestDisplayUser extends StatefulWidget {
 }
 
 class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
-  // FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  // final CollectionReference _requestReference =
-  //     FirebaseFifirestore.collection('users').where('uid', isEqualTo: widget._helperUID)erID', isEqualTo: widget._user.uid)
-  //     .snapshots();
+  var _requestReference = FirebaseFirestore.instance.collection('Request');
 
-  // void UpdateFields() async {
-  //   var querySnapshots = await _requestReference.get();
-  //   for (var doc in querySnapshots.docs) {
-  //     await doc.reference.update({
-  //       'IsCompleted': false,
-  //     });
-  //   }
-  // }
+  void UpdateFields() async {
+    var querySnapshots = await _requestReference.get();
+    for (var doc in querySnapshots.docs) {
+      await doc.reference.update({
+        'HelperUID': null,
+      });
+    }
+  }
 
   @override
   void initState() {
+    //UpdateFields();
     super.initState();
   }
 
@@ -372,14 +373,10 @@ class _HelperViewState extends State<HelperView> {
           }
 
           if (snapshot.hasData) {
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
+            Map<String, dynamic> data =
+                snapshot.data!.docs[0].data()! as Map<String, dynamic>;
 
-                return Memberprofile(document: data);
-              }).toList(),
-            );
+            return Memberprofile(document: data);
           } else {
             return const Text('Loading...');
           }

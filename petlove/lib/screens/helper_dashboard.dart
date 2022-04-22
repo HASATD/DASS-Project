@@ -22,6 +22,8 @@ class HelperAssignedRequests extends StatefulWidget {
 }
 
 class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   final CollectionReference _requestReference =
       FirebaseFirestore.instance.collection('Request');
 
@@ -38,50 +40,77 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
             return const Text('Something went wrong');
           }
 
-          if (snapshot.hasData) {
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
 
-                return Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => RequestDetail(
-                      //             document: data,
-                      //           )),
-                      // );
-                    }, // Image tapped
-                    child: Card(
-                      child: Column(
-                        children: <Widget>[
-                          ListTile(
-                            leading: CircleAvatar(
-                              radius: 75,
-                              backgroundImage: CachedNetworkImageProvider(
-                                data['ImageURL'],
-                              ),
-                            ),
-                            title: Text(
-                              data['Animal'],
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 4, 50, 88),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+          if (snapshot.hasData) {
+            return MaterialApp(
+                home: Scaffold(
+              appBar: AppBar(
+                leading: Container(
+                  color: Color.fromARGB(255, 4, 50, 88),
+                  padding: EdgeInsets.all(3),
+                  child: Flexible(
+                    flex: 1,
+                    child: IconButton(
+                      tooltip: 'Go back',
+                      icon: const Icon(Icons.arrow_back_ios),
+                      alignment: Alignment.center,
+                      iconSize: 20,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
                   ),
-                );
-              }).toList(),
-            );
+                ), //Container,
+                elevation: 0,
+                backgroundColor: Color.fromARGB(255, 4, 50, 88),
+                title: Text(
+                  'Assigned Requests',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              body: ListView(
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+
+                  return Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Card(
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              leading: CircleAvatar(
+                                radius: 75,
+                                backgroundImage: CachedNetworkImageProvider(
+                                  data['ImageURL'],
+                                ),
+                              ),
+                              title: Text(
+                                data['Animal'],
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 4, 50, 88),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ));
           } else {
             return const Center(
               child: Text("No Requests to display"),
