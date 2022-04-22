@@ -15,6 +15,7 @@ import 'package:petlove/screens/register_NGO.dart';
 import 'package:petlove/screens/join_NGO.dart';
 import 'package:petlove/screens/ngo_request_display.dart';
 import 'package:petlove/screens/help_request_display_user.dart';
+import 'package:petlove/screens/helper_dashboard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required UserModel user})
@@ -113,6 +114,22 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
+            (_user.ngo_uid != null)
+                ? ListTile(
+                    leading: Icon(Icons.request_quote),
+                    title: Text("Requests Assigned",
+                        style: TextStyle(fontSize: 18)),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HelperAssignedRequests(
+                                  user: _user,
+                                )),
+                      );
+                    },
+                  )
+                : Container(),
           ]),
         ),
         body: SafeArea(

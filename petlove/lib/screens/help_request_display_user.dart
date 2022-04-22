@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:petlove/models/User_model.dart';
@@ -7,20 +8,7 @@ import 'package:petlove/utils/authentication.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
-class UserPastHelpRequests extends StatefulWidget {
-  const UserPastHelpRequests({Key? key}) : super(key: key);
-
-  @override
-  State<UserPastHelpRequests> createState() => _UserPastHelpRequestsState();
-}
-
-class _UserPastHelpRequestsState extends State<UserPastHelpRequests> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
+import 'package:petlove/screens/NGO_team.dart';
 
 class UserHelpRequests extends StatefulWidget {
   const UserHelpRequests(
@@ -119,23 +107,20 @@ class HelpRequestDisplayUser extends StatefulWidget {
 }
 
 class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final CollectionReference _requestReference =
-      FirebaseFirestore.instance.collection('Request');
+  // final CollectionReference _requestReference =
+  //     FirebaseFifirestore.collection('users').where('uid', isEqualTo: widget._helperUID)erID', isEqualTo: widget._user.uid)
+  //     .snapshots();
 
-  late final Stream<QuerySnapshot> _requestStream = _requestReference
-      .where('UserID', isEqualTo: widget._user.uid)
-      .snapshots();
-
-  void UpdateFields() async {
-    var querySnapshots = await _requestReference.get();
-    for (var doc in querySnapshots.docs) {
-      await doc.reference.update({
-        'IsCompleted': false,
-      });
-    }
-  }
+  // void UpdateFields() async {
+  //   var querySnapshots = await _requestReference.get();
+  //   for (var doc in querySnapshots.docs) {
+  //     await doc.reference.update({
+  //       'IsCompleted': false,
+  //     });
+  //   }
+  // }
 
   @override
   void initState() {
@@ -233,7 +218,7 @@ class RequestDetail extends StatelessWidget {
                 child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Card(
-                color: Color.fromARGB(255, 255, 253, 208),
+                color: Color.fromARGB(255, 255, 255, 255),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -261,6 +246,22 @@ class RequestDetail extends StatelessWidget {
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
+                        ),
+                      ),
+                      MaterialButton(
+                        color: Color.fromARGB(255, 4, 50, 88),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    HelperView(helperUID: data!['HelperUID'])),
+                          );
+                        },
+                        child: Text(
+                          'View Helper',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
@@ -334,5 +335,54 @@ class _RequestInfoState extends State<RequestInfo> {
                 ]),
               ),
             )));
+  }
+}
+
+class HelperView extends StatefulWidget {
+  const HelperView({Key? key, required String helperUID})
+      : _helperUID = helperUID,
+        super(key: key);
+
+  final String _helperUID;
+  @override
+  State<HelperView> createState() => _HelperViewState();
+}
+
+class _HelperViewState extends State<HelperView> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  final CollectionReference _usersReference =
+      FirebaseFirestore.instance.collection('users');
+
+  late final Stream<QuerySnapshot> _helperReferenceStream =
+      _usersReference.where('uid', isEqualTo: widget._helperUID).snapshots();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _helperReferenceStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
+          }
+
+          if (snapshot.hasData) {
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+
+                return Memberprofile(document: data);
+              }).toList(),
+            );
+          } else {
+            return const Text('Loading...');
+          }
+        });
   }
 }
