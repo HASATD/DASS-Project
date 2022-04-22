@@ -154,7 +154,6 @@ class _registrationState extends State<registration> {
   late GeoFirePoint geopoint;
   Geoflutterfire geo = Geoflutterfire();
 
-
   @override
   void initState() {
     _uid = widget._uid;
@@ -402,20 +401,21 @@ class _registrationState extends State<registration> {
                     SizedBox(height: 20),
                     // choose location button
                     MaterialButton(
-                  color: Color.fromARGB(255, 4, 50, 88),
-                  child: const Text("Choose NGO location",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
-                  onPressed: () {
-                    _awaitReturnValueFromSecondScreen(context);
-                    // final location = await Navigator.of(context).push(
-                    //     MaterialPageRoute(
-                    //       builder: (context) => setCurrentLocation(
-                    //         user: _user,
-                    //       ),
-                    //     ),
-                    //   );
-                  }),
+                        color: Color.fromARGB(255, 4, 50, 88),
+                        child: const Text("Choose NGO location",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
+                        onPressed: () {
+                          _awaitReturnValueFromSecondScreen(context);
+                          // final location = await Navigator.of(context).push(
+                          //     MaterialPageRoute(
+                          //       builder: (context) => setCurrentLocation(
+                          //         user: _user,
+                          //       ),
+                          //     ),
+                          //   );
+                        }),
 
                     //upload logo button
                     ButtonWidget(
@@ -690,21 +690,12 @@ class _setCurrentLocationState extends State<setCurrentLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(
-          color: Color.fromARGB(255, 4, 50, 88),
-          padding: EdgeInsets.all(3),
-          child: Flexible(
-            flex: 1,
-            child: IconButton(
-              tooltip: 'Go back',
-              icon: const Icon(Icons.arrow_back_ios),
-              alignment: Alignment.center,
-              iconSize: 20,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            // passing this to our root
+            Navigator.of(context).pop();
+          },
         ), //Container,
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
