@@ -54,7 +54,7 @@ class _pendingapplsState extends State<pendingappls> {
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
         title: Text(
-          'pending applications',
+          'Pending Applications',
           style: TextStyle(color: Colors.white),
         ),
       ),

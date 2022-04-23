@@ -68,7 +68,7 @@ class _NGOHomePageState extends State<NGOHomePage> {
           //     ),
           //   ),
           // ), //Container
-          title: Text('Welcome to petcare app'),
+          title: Text('Home'),
           centerTitle: true,
         ),
         drawer: Drawer(
@@ -77,7 +77,10 @@ class _NGOHomePageState extends State<NGOHomePage> {
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 4, 50, 88),
               ),
-              child: Text('Drawer Header'),
+              child: Text(
+                'Menu',
+                style: TextStyle(fontSize: 25),
+              ),
             ),
             ListTile(
               leading: Icon(Icons.change_circle_outlined),
@@ -138,51 +141,34 @@ class _NGOHomePageState extends State<NGOHomePage> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.add_task_outlined),
-              title: Text("Join Requests", style: TextStyle(fontSize: 18)),
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => AccountPage(
-                //             user: _user,
-                //           )),
-                // );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.request_quote),
-              title: Text("Help Requests", style: TextStyle(fontSize: 18)),
-              onTap: () async {
-                DocumentSnapshot variable = await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(_uid)
-                    .get();
-                print(_uid);
-                Map<String, dynamic> NGOdata =
-                    variable.data()! as Map<String, dynamic>;
+                leading: Icon(Icons.request_quote),
+                title: Text("Help Requests", style: TextStyle(fontSize: 18)),
+                onTap: () async {
+                  DocumentSnapshot variable = await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(_uid)
+                      .get();
+                  print(_uid);
+                  Map<String, dynamic> NGOdata =
+                      variable.data()! as Map<String, dynamic>;
 
-                NGOModel NGO = NGOModel();
-                NGO.uid = _uid;
-                NGO.Organization = NGOdata['Organization'];
-                NGO.certificate = NGOdata['certificate'];
-                NGO.dpURL = NGOdata['dpURL'];
-                NGO.email = NGOdata['email'];
-                NGO.phoneNumber = NGOdata['phoneNumber'];
-                NGO.verified = NGOdata['verified'];
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NGORequestsDisplay(
-                            uid: _uid,
-                            NGO: NGO)
-                  )
-                );
-              }
-            ),
+                  NGOModel NGO = NGOModel();
+                  NGO.uid = _uid;
+                  NGO.Organization = NGOdata['Organization'];
+                  NGO.certificate = NGOdata['certificate'];
+                  NGO.dpURL = NGOdata['dpURL'];
+                  NGO.email = NGOdata['email'];
+                  NGO.phoneNumber = NGOdata['phoneNumber'];
+                  NGO.verified = NGOdata['verified'];
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              NGORequestsDisplay(uid: _uid, NGO: NGO)));
+                }),
             ListTile(
               leading: Icon(Icons.pending_outlined),
-              title: Text("Applications", style: TextStyle(fontSize: 18)),
+              title: Text("Join Requests", style: TextStyle(fontSize: 18)),
               onTap: () async {
                 DocumentSnapshot variable = await FirebaseFirestore.instance
                     .collection('users')
@@ -275,14 +261,30 @@ class _NGOHomePageState extends State<NGOHomePage> {
                 IconButton(
                   tooltip: 'Profile',
                   icon: const Icon(Icons.account_circle, size: 35),
-                  onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => AccountPage(
-                    //             user: _user,
-                    //           )),
-                    // );
+                  onPressed: () async {
+                    NGOModel fireuser = NGOModel();
+                    DocumentSnapshot variable = await FirebaseFirestore.instance
+                        .collection('NGOs')
+                        .doc(_uid)
+                        .get();
+
+                    Map<String, dynamic> data =
+                        variable.data()! as Map<String, dynamic>;
+                    fireuser.Organization = data['Organization'];
+                    fireuser.uid = data['uid'];
+                    fireuser.email = data['email'];
+                    fireuser.dpURL = data['dpURL'];
+                    fireuser.phoneNumber = data['phoneNumber'];
+                    fireuser.location = data['location'];
+                    fireuser.verified = data['verified'];
+                    fireuser.certificate = data['certificate'];
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NGOAccountPage(
+                                NGO: fireuser,
+                              )),
+                    );
                   },
                 ),
               ],
