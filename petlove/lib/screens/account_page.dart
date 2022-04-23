@@ -266,21 +266,12 @@ class _NGOAccountPageState extends State<NGOAccountPage> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 216, 210, 210),
       appBar: AppBar(
-        leading: Container(
-          color: Color.fromARGB(255, 4, 50, 88),
-          padding: EdgeInsets.all(3),
-          child: Flexible(
-            flex: 1,
-            child: IconButton(
-              tooltip: 'Go back',
-              icon: const Icon(Icons.arrow_back),
-              alignment: Alignment.center,
-              iconSize: 20,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            // passing this to our root
+            Navigator.of(context).pop();
+          },
         ), //Container,
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
