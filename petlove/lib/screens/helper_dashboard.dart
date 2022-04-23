@@ -75,12 +75,35 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
                     padding: const EdgeInsets.all(1.0),
                     child: GestureDetector(
                       onTap: () {},
+                      // child: Card(
+                      //   child: Column(
+                      //     children: <Widget>[
+                      //       ListTile(
+                      //         leading: CircleAvatar(
+                      //           radius: 75,
+                      //           backgroundImage: CachedNetworkImageProvider(
+                      //             data['ImageURL'],
+                      //           ),
+                      //         ),
+                      //         title: Text(
+                      //           data['Animal'],
+                      //           style: TextStyle(
+                      //             color: Color.fromARGB(255, 4, 50, 88),
+                      //             fontSize: 18,
+                      //             fontWeight: FontWeight.bold,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+
                       child: Card(
                         child: Column(
                           children: <Widget>[
                             ListTile(
                               leading: CircleAvatar(
-                                radius: 75,
+                                radius: 30,
                                 backgroundImage: CachedNetworkImageProvider(
                                   data['ImageURL'],
                                 ),
@@ -93,6 +116,33 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                TextButton(
+                                  child: const Text(
+                                    'LOCATION',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  onPressed: () {/* ... */},
+                                ),
+                                const SizedBox(width: 16),
+                                Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: ElevatedButton(
+                                    child: const Text(
+                                      'DETAILS',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                    onPressed: () {
+                                      // var doc_id = snapshot.data!.docs[0].reference.id;
+                                      // print(doc_id);
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                              ],
                             ),
                           ],
                         ),
