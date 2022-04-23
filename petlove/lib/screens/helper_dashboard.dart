@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:petlove/screens/NGO_team.dart';
+import 'package:petlove/screens/help_request_display_user.dart';
 
 class HelperAssignedRequests extends StatefulWidget {
   const HelperAssignedRequests({Key? key, required UserModel user})
@@ -120,12 +121,18 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                TextButton(
-                                  child: const Text(
-                                    'LOCATION',
-                                    style: TextStyle(fontSize: 15),
+                                Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: ElevatedButton(
+                                    child: const Text(
+                                      'LOCATION',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                    onPressed: () {
+                                      // var doc_id = snapshot.data!.docs[0].reference.id;
+                                      // print(doc_id);
+                                    },
                                   ),
-                                  onPressed: () {/* ... */},
                                 ),
                                 const SizedBox(width: 16),
                                 Padding(
@@ -138,6 +145,14 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
                                     onPressed: () {
                                       // var doc_id = snapshot.data!.docs[0].reference.id;
                                       // print(doc_id);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RequestDetailWithoutHelper(
+                                                  document: data,
+                                                )),
+                                      );
                                     },
                                   ),
                                 ),

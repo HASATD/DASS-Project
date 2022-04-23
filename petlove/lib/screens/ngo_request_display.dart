@@ -137,7 +137,8 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                   // print(distance);
 
                   // print(data!['HelperUID']);
-                  if (distance < 30000 && (data['HelperUID'] == null || data!['HelperUID'] == '')) {
+                  if (distance < 30000 &&
+                      (data['HelperUID'] == null || data!['HelperUID'] == '')) {
                     return Padding(
                       padding: const EdgeInsets.all(1.0),
                       child: GestureDetector(
@@ -167,12 +168,18 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  TextButton(
-                                    child: const Text(
-                                      'REFUSE',
-                                      style: TextStyle(fontSize: 15),
+                                  Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: ElevatedButton(
+                                      child: const Text(
+                                        'LOCATION',
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                      onPressed: () {
+                                        // var doc_id = snapshot.data!.docs[0].reference.id;
+                                        // print(doc_id);
+                                      },
                                     ),
-                                    onPressed: () {/* ... */},
                                   ),
                                   const SizedBox(width: 16),
                                   Padding(
@@ -268,8 +275,12 @@ class RequestDetail extends StatelessWidget {
                       Container(
                         height: 400,
                         width: double.infinity,
-                        child: Image.network(
-                          data!['ImageURL'],
+                        // child: Image.network(
+                        //   data!['ImageURL'],
+                        //   fit: BoxFit.contain,
+                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: data!['ImageURL'],
                           fit: BoxFit.contain,
                         ),
                       ),

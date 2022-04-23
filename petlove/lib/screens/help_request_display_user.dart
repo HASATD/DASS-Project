@@ -111,13 +111,22 @@ class HelpRequestDisplayUser extends StatefulWidget {
 class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  var _requestReference = FirebaseFirestore.instance.collection('Request');
+  var _requestReference = FirebaseFirestore.instance
+      .collection('Request')
+      .where('Animal', isEqualTo: 'new');
 
   void UpdateFields() async {
     var querySnapshots = await _requestReference.get();
     for (var doc in querySnapshots.docs) {
       await doc.reference.update({
         'HelperUID': null,
+      });
+
+      String id = doc.id;
+
+      await FirebaseFirestore.instance
+          .runTransaction((Transaction myTransaction) async {
+        await myTransaction.delete(doc.reference);
       });
     }
   }
@@ -138,10 +147,10 @@ class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
             bottom: TabBar(
               tabs: [
                 Tab(
-                  text: "ACTIVE",
+                  text: "OPEN",
                 ),
                 Tab(
-                  text: "PAST",
+                  text: "ASSIGNED TO HELPER",
                 ),
               ],
             ),
@@ -219,8 +228,12 @@ class RequestDetail extends StatelessWidget {
                       Container(
                         height: 400,
                         width: double.infinity,
-                        child: Image.network(
-                          data!['ImageURL'],
+                        // child: Image.network(
+                        //   data!['ImageURL'],
+                        //   fit: BoxFit.contain,
+                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: data!['ImageURL'],
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -259,6 +272,88 @@ class RequestDetail extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
+                    ],
+                  ),
+                ),
+              ),
+            ))));
+  }
+}
+
+class RequestDetailWithoutHelper extends StatelessWidget {
+  const RequestDetailWithoutHelper(
+      {required Map<String, dynamic>? document, Key? key})
+      : data = document,
+        super(key: key);
+
+  final Map<String, dynamic>? data;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+              leading: Container(
+                color: Color.fromARGB(255, 4, 50, 88),
+                padding: EdgeInsets.all(3),
+                child: Flexible(
+                  flex: 1,
+                  child: IconButton(
+                    tooltip: 'Go back',
+                    icon: const Icon(Icons.arrow_back),
+                    alignment: Alignment.center,
+                    iconSize: 20,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ), //Container,
+              elevation: 0,
+              backgroundColor: Color.fromARGB(255, 4, 50, 88),
+              title: Text(
+                'Current Requests',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            body: Center(
+                child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                color: Color.fromARGB(255, 255, 255, 255),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Container(
+                        height: 400,
+                        width: double.infinity,
+                        // child: Image.network(
+                        //   data!['ImageURL'],
+                        //   fit: BoxFit.contain,
+                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: data!['ImageURL'],
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      Text(
+                        'Animal : ' + data!['Animal'],
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        'Description : ' + data!['Description'],
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
                     ],
                   ),
                 ),
