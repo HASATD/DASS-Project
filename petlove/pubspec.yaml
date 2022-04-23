@@ -48,6 +48,7 @@ dependencies:
   google_maps_flutter: ^2.1.3
   geoflutterfire: ^3.0.3
   cached_network_image: ^3.2.0
+  maps_launcher: ^2.0.1
 
 
 dev_dependencies:

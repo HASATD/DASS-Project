@@ -10,6 +10,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:petlove/screens/NGO_team.dart';
 import 'package:petlove/screens/help_request_display_user.dart';
+import 'package:petlove/screens/display_location.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class HelperAssignedRequests extends StatefulWidget {
   const HelperAssignedRequests({Key? key, required UserModel user})
@@ -131,6 +133,18 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
                                     onPressed: () {
                                       // var doc_id = snapshot.data!.docs[0].reference.id;
                                       // print(doc_id);
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) =>
+                                      //           displayCurrentLocation(
+                                      //               pos: data['Location']
+                                      //                   ['geopoint'])),
+                                      // );
+                                      MapsLauncher.launchCoordinates(
+                                          data['Location']['geopoint'].latitude,
+                                          data['Location']['geopoint']
+                                              .longitude);
                                     },
                                   ),
                                 ),

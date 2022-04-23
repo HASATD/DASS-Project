@@ -11,6 +11,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:petlove/models/NGO_model.dart';
+import 'package:petlove/screens/display_location.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class NGORequestsDisplay extends StatefulWidget {
   const NGORequestsDisplay(
@@ -178,6 +180,19 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                                       onPressed: () {
                                         // var doc_id = snapshot.data!.docs[0].reference.id;
                                         // print(doc_id);
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) =>
+                                        //           displayCurrentLocation(
+                                        //               pos: data['Location']
+                                        //                   ['geopoint'])),
+                                        // );
+                                        MapsLauncher.launchCoordinates(
+                                            data['Location']['geopoint']
+                                                .latitude,
+                                            data['Location']['geopoint']
+                                                .longitude);
                                       },
                                     ),
                                   ),
