@@ -229,22 +229,43 @@ class RequestDetail extends StatelessWidget {
                           fit: BoxFit.contain,
                         ),
                       ),
-                      Text(
-                        'Animal : ' + data!['Animal'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Text(
-                        'Description : ' + data!['Description'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                      Container(
+                          child: Column(children: <Widget>[
+                        ListTile(
+                            title: Text(
+                              'Animal',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 4, 50, 88),
+                              ),
+                            ),
+                            subtitle: Text(
+                              data!['Animal'],
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            )),
+                        ListTile(
+                          title: Text(
+                            'Description',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 4, 50, 88),
+                            ),
+                          ),
+                          subtitle: Text(
+                            data!['Description'],
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        )
+                      ])),
                       (data!['HelperUID'] == null)
                           ? Container()
                           : MaterialButton(
@@ -321,22 +342,43 @@ class RequestDetailWithoutHelper extends StatelessWidget {
                           fit: BoxFit.contain,
                         ),
                       ),
-                      Text(
-                        'Animal : ' + data!['Animal'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Text(
-                        'Description : ' + data!['Description'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                      Container(
+                          child: Column(children: <Widget>[
+                        ListTile(
+                            title: Text(
+                              'Animal',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 4, 50, 88),
+                              ),
+                            ),
+                            subtitle: Text(
+                              data!['Animal'],
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            )),
+                        ListTile(
+                          title: Text(
+                            'Description',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 4, 50, 88),
+                            ),
+                          ),
+                          subtitle: Text(
+                            data!['Description'],
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        )
+                      ]))
                     ],
                   ),
                 ),
@@ -395,19 +437,43 @@ class _RequestInfoState extends State<RequestInfo> {
               ),
             ),
             body: Center(
-              child: Container(
-                child: Column(children: <Widget>[
-                  Text('Animal : ' + data!['Animal']),
-                  SizedBox(
-                    height: 10,
+                child: Container(
+                    child: Column(children: <Widget>[
+              ListTile(
+                  title: Text(
+                    'Animal',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 4, 50, 88),
+                    ),
                   ),
-                  Text('Description : ' + data!['Description']),
-                  SizedBox(
-                    height: 10,
+                  subtitle: Text(
+                    data!['Animal'],
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  )),
+              ListTile(
+                title: Text(
+                  'Description',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 4, 50, 88),
                   ),
-                ]),
-              ),
-            )));
+                ),
+                subtitle: Text(
+                  data!['Description'],
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              )
+            ])))));
   }
 }
 

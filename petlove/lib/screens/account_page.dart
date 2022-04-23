@@ -149,7 +149,9 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                 ),
-                Divider(),
+                Divider(
+                  color: Colors.black,
+                ),
                 ListTile(
                   title: Text(
                     'Email',
@@ -330,7 +332,7 @@ class _NGOAccountPageState extends State<NGOAccountPage> {
                             child: Icon(
                               Icons.group,
                               size: 50,
-                              color: Colors.blueGrey,
+                              color: Colors.white,
                             ),
                             radius: 50,
                           ))
@@ -344,6 +346,7 @@ class _NGOAccountPageState extends State<NGOAccountPage> {
             ),
           ),
           Container(
+            //color: Colors.white,
             child: Column(
               children: <Widget>[
                 ListTile(
@@ -383,6 +386,23 @@ class _NGOAccountPageState extends State<NGOAccountPage> {
                 ),
                 SizedBox(
                   height: 20,
+                ),
+                ListTile(
+                  title: Text(
+                    'Contact',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 4, 50, 88),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${_NGO.phoneNumber!}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
               ],
             ),
