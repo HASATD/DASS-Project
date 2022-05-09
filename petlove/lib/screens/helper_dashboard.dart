@@ -9,6 +9,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:petlove/screens/NGO_team.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class HelperAssignedRequests extends StatefulWidget {
   const HelperAssignedRequests({Key? key, required UserModel user})
@@ -125,7 +128,18 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
                                     'LOCATION',
                                     style: TextStyle(fontSize: 15),
                                   ),
-                                  onPressed: () {/* ... */},
+                                  onPressed: () {
+                                    Map map = data['Location'];
+                                    GeoPoint geopos = map['geopoint'];
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => displayCurrentLocation(
+                                          pos: geopos,
+                                        ),
+                                      )
+                                    );
+                                  },
                                 ),
                                 const SizedBox(width: 16),
                                 Padding(
@@ -160,3 +174,4 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
         });
   }
 }
+
