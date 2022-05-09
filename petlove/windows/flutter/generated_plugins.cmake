@@ -4,7 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   geolocator_windows
+  maps_launcher
   permission_handler_windows
+  url_launcher_windows
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

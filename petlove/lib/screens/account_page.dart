@@ -149,7 +149,9 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                 ),
-                Divider(),
+                Divider(
+                  color: Colors.black,
+                ),
                 ListTile(
                   title: Text(
                     'Email',
@@ -264,21 +266,12 @@ class _NGOAccountPageState extends State<NGOAccountPage> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 216, 210, 210),
       appBar: AppBar(
-        leading: Container(
-          color: Color.fromARGB(255, 4, 50, 88),
-          padding: EdgeInsets.all(3),
-          child: Flexible(
-            flex: 1,
-            child: IconButton(
-              tooltip: 'Go back',
-              icon: const Icon(Icons.arrow_back),
-              alignment: Alignment.center,
-              iconSize: 20,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            // passing this to our root
+            Navigator.of(context).pop();
+          },
         ), //Container,
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 4, 50, 88),
@@ -330,7 +323,7 @@ class _NGOAccountPageState extends State<NGOAccountPage> {
                             child: Icon(
                               Icons.group,
                               size: 50,
-                              color: Colors.blueGrey,
+                              color: Colors.white,
                             ),
                             radius: 50,
                           ))
@@ -344,6 +337,7 @@ class _NGOAccountPageState extends State<NGOAccountPage> {
             ),
           ),
           Container(
+            //color: Colors.white,
             child: Column(
               children: <Widget>[
                 ListTile(
@@ -383,6 +377,23 @@ class _NGOAccountPageState extends State<NGOAccountPage> {
                 ),
                 SizedBox(
                   height: 20,
+                ),
+                ListTile(
+                  title: Text(
+                    'Contact',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 4, 50, 88),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${_NGO.phoneNumber!}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
               ],
             ),

@@ -11,6 +11,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:petlove/models/NGO_model.dart';
+import 'package:petlove/screens/display_location.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class NGORequestsDisplay extends StatefulWidget {
   const NGORequestsDisplay(
@@ -137,7 +139,8 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                   // print(distance);
 
                   // print(data!['HelperUID']);
-                  if (distance < 30000 && (data['HelperUID'] == null || data['HelperUID'] == '')) {
+                  if (distance < 30000 &&
+                      (data['HelperUID'] == null || data!['HelperUID'] == '')) {
                     return Padding(
                       padding: const EdgeInsets.all(1.0),
                       child: GestureDetector(
@@ -167,12 +170,31 @@ class _NGORequestsDisplayState extends State<NGORequestsDisplay> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  TextButton(
-                                    child: const Text(
-                                      'REFUSE',
-                                      style: TextStyle(fontSize: 15),
+                                  Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: ElevatedButton(
+                                      child: const Text(
+                                        'LOCATION',
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                      onPressed: () {
+                                        // var doc_id = snapshot.data!.docs[0].reference.id;
+                                        // print(doc_id);
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) =>
+                                        //           displayCurrentLocation(
+                                        //               pos: data['Location']
+                                        //                   ['geopoint'])),
+                                        // );
+                                        MapsLauncher.launchCoordinates(
+                                            data['Location']['geopoint']
+                                                .latitude,
+                                            data['Location']['geopoint']
+                                                .longitude);
+                                      },
                                     ),
-                                    onPressed: () {/* ... */},
                                   ),
                                   const SizedBox(width: 16),
                                   Padding(
@@ -268,27 +290,52 @@ class RequestDetail extends StatelessWidget {
                       Container(
                         height: 400,
                         width: double.infinity,
-                        child: Image.network(
-                          data!['ImageURL'],
+                        // child: Image.network(
+                        //   data!['ImageURL'],
+                        //   fit: BoxFit.contain,
+                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: data!['ImageURL'],
                           fit: BoxFit.contain,
                         ),
                       ),
-                      Text(
-                        'Animal : ' + data!['Animal'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Text(
-                        'Description : ' + data!['Description'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                      Container(
+                          child: Column(children: <Widget>[
+                        ListTile(
+                            title: Text(
+                              'Animal',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 4, 50, 88),
+                              ),
+                            ),
+                            subtitle: Text(
+                              data!['Animal'],
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            )),
+                        ListTile(
+                          title: Text(
+                            'Description',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 4, 50, 88),
+                            ),
+                          ),
+                          subtitle: Text(
+                            data!['Description'],
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        )
+                      ]))
                     ],
                   ),
                 ),
@@ -347,19 +394,43 @@ class _RequestInfoState extends State<RequestInfo> {
               ),
             ),
             body: Center(
-              child: Container(
-                child: Column(children: <Widget>[
-                  Text('Animal : ' + data!['Animal']),
-                  SizedBox(
-                    height: 10,
+                child: Container(
+                    child: Column(children: <Widget>[
+              ListTile(
+                  title: Text(
+                    'Animal',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 4, 50, 88),
+                    ),
                   ),
-                  Text('Description : ' + data!['Description']),
-                  SizedBox(
-                    height: 10,
+                  subtitle: Text(
+                    data!['Animal'],
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  )),
+              ListTile(
+                title: Text(
+                  'Description',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 4, 50, 88),
                   ),
-                ]),
-              ),
-            )));
+                ),
+                subtitle: Text(
+                  data!['Description'],
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              )
+            ])))));
   }
 }
 

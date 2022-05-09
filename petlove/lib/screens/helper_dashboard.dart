@@ -12,6 +12,9 @@ import 'package:petlove/screens/NGO_team.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:petlove/screens/help_request_display_user.dart';
+import 'package:petlove/screens/display_location.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class HelperAssignedRequests extends StatefulWidget {
   const HelperAssignedRequests({Key? key, required UserModel user})
@@ -123,23 +126,30 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                TextButton(
-                                  child: const Text(
-                                    'LOCATION',
-                                    style: TextStyle(fontSize: 15),
+                                Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: ElevatedButton(
+                                    child: const Text(
+                                      'LOCATION',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                    onPressed: () {
+                                      // var doc_id = snapshot.data!.docs[0].reference.id;
+                                      // print(doc_id);
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) =>
+                                      //           displayCurrentLocation(
+                                      //               pos: data['Location']
+                                      //                   ['geopoint'])),
+                                      // );
+                                      MapsLauncher.launchCoordinates(
+                                          data['Location']['geopoint'].latitude,
+                                          data['Location']['geopoint']
+                                              .longitude);
+                                    },
                                   ),
-                                  onPressed: () {
-                                    Map map = data['Location'];
-                                    GeoPoint geopos = map['geopoint'];
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => displayCurrentLocation(
-                                          pos: geopos,
-                                        ),
-                                      )
-                                    );
-                                  },
                                 ),
                                 const SizedBox(width: 16),
                                 Padding(
@@ -152,6 +162,14 @@ class _HelperAssignedRequestsState extends State<HelperAssignedRequests> {
                                     onPressed: () {
                                       // var doc_id = snapshot.data!.docs[0].reference.id;
                                       // print(doc_id);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RequestDetailWithoutHelper(
+                                                  document: data,
+                                                )),
+                                      );
                                     },
                                   ),
                                 ),

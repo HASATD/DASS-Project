@@ -65,17 +65,20 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),**/ //Container
-          title: const Text('Welcome to petcare app'),
+          title: const Text('Home'),
           centerTitle: true,
         ),
         drawer: Drawer(
           child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+            // height: 50,
             const DrawerHeader(
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 4, 50, 88),
               ),
-              child: Text('Drawer Header'),
+              child: Text('Menu',
+                  style: TextStyle(fontSize: 25, color: Colors.white)),
             ),
+
             ListTile(
               leading: Icon(Icons.change_circle_outlined),
               title: Text("Switch Account", style: TextStyle(fontSize: 18)),
@@ -195,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                   tooltip: 'Home',
                   icon: const Icon(Icons.home, size: 35),
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => HomePage(

@@ -111,13 +111,22 @@ class HelpRequestDisplayUser extends StatefulWidget {
 class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  var _requestReference = FirebaseFirestore.instance.collection('Request');
+  var _requestReference = FirebaseFirestore.instance
+      .collection('Request')
+      .where('Animal', isEqualTo: 'new');
 
   void UpdateFields() async {
     var querySnapshots = await _requestReference.get();
     for (var doc in querySnapshots.docs) {
       await doc.reference.update({
         'HelperUID': null,
+      });
+
+      String id = doc.id;
+
+      await FirebaseFirestore.instance
+          .runTransaction((Transaction myTransaction) async {
+        await myTransaction.delete(doc.reference);
       });
     }
   }
@@ -138,10 +147,10 @@ class _HelpRequestDisplayUserState extends State<HelpRequestDisplayUser> {
             bottom: TabBar(
               tabs: [
                 Tab(
-                  text: "ACTIVE",
+                  text: "OPEN",
                 ),
                 Tab(
-                  text: "PAST",
+                  text: "ASSIGNED TO HELPER",
                 ),
               ],
             ),
@@ -183,21 +192,126 @@ class RequestDetail extends StatelessWidget {
     return MaterialApp(
         home: Scaffold(
             appBar: AppBar(
-              leading: Container(
-                color: Color.fromARGB(255, 4, 50, 88),
-                padding: EdgeInsets.all(3),
-                child: Flexible(
-                  flex: 1,
-                  child: IconButton(
-                    tooltip: 'Go back',
-                    icon: const Icon(Icons.arrow_back),
-                    alignment: Alignment.center,
-                    iconSize: 20,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  // passing this to our root
+                  Navigator.of(context).pop();
+                },
+              ),
+              //Container,
+              elevation: 0,
+              backgroundColor: Color.fromARGB(255, 4, 50, 88),
+              title: Text(
+                'Current Requests',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            body: Center(
+                child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                color: Color.fromARGB(255, 255, 255, 255),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Container(
+                        height: 400,
+                        width: double.infinity,
+                        // child: Image.network(
+                        //   data!['ImageURL'],
+                        //   fit: BoxFit.contain,
+                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: data!['ImageURL'],
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      Container(
+                          child: Column(children: <Widget>[
+                        ListTile(
+                            title: Text(
+                              'Animal',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 4, 50, 88),
+                              ),
+                            ),
+                            subtitle: Text(
+                              data!['Animal'],
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            )),
+                        ListTile(
+                          title: Text(
+                            'Description',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 4, 50, 88),
+                            ),
+                          ),
+                          subtitle: Text(
+                            data!['Description'],
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        )
+                      ])),
+                      (data!['HelperUID'] == null)
+                          ? Container()
+                          : MaterialButton(
+                              color: Color.fromARGB(255, 4, 50, 88),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HelperView(
+                                          helperUID: data!['HelperUID'])),
+                                );
+                              },
+                              child: Text(
+                                'View Helper',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                    ],
                   ),
                 ),
+              ),
+            ))));
+  }
+}
+
+class RequestDetailWithoutHelper extends StatelessWidget {
+  const RequestDetailWithoutHelper(
+      {required Map<String, dynamic>? document, Key? key})
+      : data = document,
+        super(key: key);
+
+  final Map<String, dynamic>? data;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  // passing this to our root
+                  Navigator.of(context).pop();
+                },
               ), //Container,
               elevation: 0,
               backgroundColor: Color.fromARGB(255, 4, 50, 88),
@@ -219,46 +333,52 @@ class RequestDetail extends StatelessWidget {
                       Container(
                         height: 400,
                         width: double.infinity,
-                        child: Image.network(
-                          data!['ImageURL'],
+                        // child: Image.network(
+                        //   data!['ImageURL'],
+                        //   fit: BoxFit.contain,
+                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: data!['ImageURL'],
                           fit: BoxFit.contain,
                         ),
                       ),
-                      Text(
-                        'Animal : ' + data!['Animal'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Text(
-                        'Description : ' + data!['Description'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      (data!['HelperUID'] == null)
-                          ? Container()
-                          : MaterialButton(
-                              color: Color.fromARGB(255, 4, 50, 88),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HelperView(
-                                          helperUID: data!['HelperUID'])),
-                                );
-                              },
-                              child: Text(
-                                'View Helper',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                      Container(
+                          child: Column(children: <Widget>[
+                        ListTile(
+                            title: Text(
+                              'Animal',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 4, 50, 88),
                               ),
                             ),
+                            subtitle: Text(
+                              data!['Animal'],
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            )),
+                        ListTile(
+                          title: Text(
+                            'Description',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 4, 50, 88),
+                            ),
+                          ),
+                          subtitle: Text(
+                            data!['Description'],
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        )
+                      ]))
                     ],
                   ),
                 ),
@@ -317,19 +437,43 @@ class _RequestInfoState extends State<RequestInfo> {
               ),
             ),
             body: Center(
-              child: Container(
-                child: Column(children: <Widget>[
-                  Text('Animal : ' + data!['Animal']),
-                  SizedBox(
-                    height: 10,
+                child: Container(
+                    child: Column(children: <Widget>[
+              ListTile(
+                  title: Text(
+                    'Animal',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 4, 50, 88),
+                    ),
                   ),
-                  Text('Description : ' + data!['Description']),
-                  SizedBox(
-                    height: 10,
+                  subtitle: Text(
+                    data!['Animal'],
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  )),
+              ListTile(
+                title: Text(
+                  'Description',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 4, 50, 88),
                   ),
-                ]),
-              ),
-            )));
+                ),
+                subtitle: Text(
+                  data!['Description'],
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              )
+            ])))));
   }
 }
 
